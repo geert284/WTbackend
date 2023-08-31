@@ -6,25 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import nl.workingtalent.backend.entity.Book;
-import nl.workingtalent.backend.service.BookService;
+
+import nl.workingtalent.backend.entity.Loan;
+import nl.workingtalent.backend.service.LoanService;
 
 @CrossOrigin
 @RestController
-public class BookController {
+public class LoanController {
 	
 	@Autowired
-	private BookService service;
+	private LoanService service;
 	
-	@RequestMapping("book/all")
-	public List<Book> getBooks() {
-		return service.findAllBooks();
+	@RequestMapping("loan/all")
+	public List<Loan> getLoans() {
+		return service.findAllLoans();
 	}
-	
-	
-	
-	
 
-	
-	
 }
