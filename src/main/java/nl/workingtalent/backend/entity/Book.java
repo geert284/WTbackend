@@ -15,6 +15,25 @@ public class Book {
 	
 	@Column(length = 100, nullable = false)
 	private String title;
+	
+	@Column(length = 3, nullable = false)
+	private int edition;
+	
+	@Column(length = 50, nullable = false)
+	private String ISBN;
+	
+	@Column(length = 100, nullable = false)
+	private String author;
+	
+	@Column(length = 50, nullable = false)
+	private String category;
+	
+	@Column(length = 50, nullable = false)
+	private String collation;
+	
+	@Column(length = 50, nullable = false)
+	private String language;
+	
 
 	public long getId() {
 		return id;
