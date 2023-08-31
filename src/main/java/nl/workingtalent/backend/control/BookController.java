@@ -1,7 +1,11 @@
 package nl.workingtalent.backend.control;
 
+import java.awt.print.Book;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import nl.workingtalent.backend.service.BookService;
@@ -12,6 +16,11 @@ public class BookController {
 	
 	@Autowired
 	private BookService service;
+	
+	@RequestMapping("book/all")
+	public List<Book> getBooks() {
+		return service.findAllBooks();
+	}
 	
 	
 	
