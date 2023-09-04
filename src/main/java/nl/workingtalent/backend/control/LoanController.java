@@ -13,10 +13,10 @@ import nl.workingtalent.backend.service.LoanService;
 @CrossOrigin
 @RestController
 public class LoanController {
-	
+
 	@Autowired
 	private LoanService service;
-	
+
 	@RequestMapping("loan/all")
 	public List<Loan> getLoans() {
 		return service.findAllLoans();
