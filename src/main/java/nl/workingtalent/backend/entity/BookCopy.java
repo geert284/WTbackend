@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class BookCopy {
@@ -21,6 +23,10 @@ public class BookCopy {
 	
 	@Column(length = 50)
 	private String status;
+	
+	@ManyToOne
+	@JoinColumn(name = "book_id")
+	private Book book;
 
 	public long getId() {
 		return id;
