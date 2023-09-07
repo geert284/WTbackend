@@ -1,48 +1,22 @@
-package nl.workingtalent.backend.entity;
+package nl.workingtalent.backend.dto;
 
-import java.util.List;
+public class BookDto {
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-
-@Entity
-public class Book {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(length = 100, nullable = false)
 	private String title;
 	
-	@Column(length = 3, nullable = false)
 	private int edition;
 	
-	@Column(length = 50, nullable = false)
 	private String ISBN;
 	
-	@Column(length = 100, nullable = false)
 	private String author;
 	
-	@Column(length = 50, nullable = false)
 	private String category;
 	
-	@Column(length = 50, nullable = false)
 	private String collation;
 	
-	@Column(length = 50, nullable = false)
 	private String language;
-	
-//	@JsonIgnore
-	@OneToMany(mappedBy = "book")
-	private List<BookCopy> copies;
-	
 
 	public long getId() {
 		return id;
@@ -106,14 +80,6 @@ public class Book {
 
 	public void setLanguage(String language) {
 		this.language = language;
-	}
-	
-	public List<BookCopy> getCopies() {
-		return copies;
-	}
-	
-	public void setCopies(List<BookCopy> copies) {
-		this.copies = copies;
 	}
 	
 }
