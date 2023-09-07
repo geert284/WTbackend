@@ -1,5 +1,7 @@
 package nl.workingtalent.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,6 +26,7 @@ public class BookCopy {
 	@Column(length = 50)
 	private String status;
 	
+	@JsonIgnore
 	@ManyToOne(optional = false)
 	private Book book;
 

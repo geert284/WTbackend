@@ -39,7 +39,7 @@ public class Book {
 	@Column(length = 50, nullable = false)
 	private String language;
 	
-//	@JsonIgnore
+	@JsonIgnore
 	@OneToMany(mappedBy = "book")
 	private List<BookCopy> copies;
 	

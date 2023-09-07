@@ -34,6 +34,11 @@ public class BookController {
 			bookDto.setAuthor(book.getAuthor());
 			bookDto.setCategory(book.getCategory());
 			bookDto.setEdition(book.getEdition());
+			bookDto.setTitle(book.getTitle());
+			bookDto.setCollation(book.getCollation());
+			bookDto.setISBN(book.getISBN());
+			bookDto.setId(book.getId());
+			bookDto.setLanguage(book.getLanguage());
 			
 			dtos.add(bookDto);
 		});
