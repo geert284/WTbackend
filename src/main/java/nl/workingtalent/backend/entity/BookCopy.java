@@ -24,8 +24,7 @@ public class BookCopy {
 	@Column(length = 50)
 	private String status;
 	
-	@ManyToOne
-	@JoinColumn(name = "book_id")
+	@ManyToOne(optional = false)
 	private Book book;
 
 	public Book getBook() {
