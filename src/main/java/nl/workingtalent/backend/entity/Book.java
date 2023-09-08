@@ -34,8 +34,9 @@ public class Book {
 	private String category;
 
 	@Column(length = 50, nullable = false)
-	private String collation;
 
+	private String format;
+	
 	@Column(length = 50, nullable = false)
 	private String language;
 
@@ -103,12 +104,12 @@ public class Book {
 		this.category = category;
 	}
 
-	public String getCollation() {
-		return collation;
+	public String getFormat() {
+		return format;
 	}
 
-	public void setCollation(String collation) {
-		this.collation = collation;
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	public String getLanguage() {

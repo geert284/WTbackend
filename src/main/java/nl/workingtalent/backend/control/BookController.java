@@ -35,7 +35,7 @@ public class BookController {
 			bookDto.setCategory(book.getCategory());
 			bookDto.setEdition(book.getEdition());
 			bookDto.setTitle(book.getTitle());
-			bookDto.setCollation(book.getCollation());
+			bookDto.setFormat(book.getFormat());
 			bookDto.setISBN(book.getISBN());
 			bookDto.setId(book.getId());
 			bookDto.setLanguage(book.getLanguage());
