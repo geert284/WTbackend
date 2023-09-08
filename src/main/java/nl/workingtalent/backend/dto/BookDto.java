@@ -3,19 +3,19 @@ package nl.workingtalent.backend.dto;
 public class BookDto {
 
 	private long id;
-	
+
 	private String title;
-	
+
 	private int edition;
-	
+
 	private String ISBN;
-	
+
 	private String author;
-	
+
 	private String category;
-	
+
 	private String format;
-	
+
 	private String language;
 
 	public long getId() {
@@ -81,5 +81,5 @@ public class BookDto {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
-	
+
 }
