@@ -14,7 +14,7 @@ public class BookDto {
 	
 	private String category;
 	
-	private String collation;
+	private String format;
 	
 	private String language;
 
@@ -66,12 +66,12 @@ public class BookDto {
 		this.category = category;
 	}
 
-	public String getCollation() {
-		return collation;
+	public String getFormat() {
+		return format;
 	}
 
-	public void setCollation(String collation) {
-		this.collation = collation;
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	public String getLanguage() {
