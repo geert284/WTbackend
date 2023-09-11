@@ -2,9 +2,11 @@ package nl.workingtalent.backend.control;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,10 +48,27 @@ public class BookController {
 		return dtos;
 	}
 	
-	// @RequestMapping(value="book/create", method=RequestMethod.POST)
-	@PostMapping("book/create")
-	public void create(@RequestBody SaveBookDto dto) {
+	@RequestMapping(value="book/create", method=RequestMethod.POST)
+	//@PostMapping("book/create")
+	public void createBook(@RequestBody BookDto bookDto) {
+		// SavebookDTo controller toevoegen
+		Book book = new Book();
+		book.setAuthor(bookDto.getAuthor());
+		book.setCategory(bookDto.getCategory());
+		book.setCategory(bookDto.getCategory());
+		book.setEdition(bookDto.getEdition());
+		book.setTitle(bookDto.getTitle());
+		book.setFormat(bookDto.getFormat());
+		book.setISBN(bookDto.getISBN());
+		book.setLanguage(bookDto.getLanguage());
 		
+		service.create(book);
+	}
+	
+	
+	@RequestMapping("book/{id}")
+	public Optional<Book> findBook(@PathVariable long id) {
+		return service.findById(id);
 	}
 	
 }
