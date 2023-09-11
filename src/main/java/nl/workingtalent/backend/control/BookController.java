@@ -46,10 +46,21 @@ public class BookController {
 		return dtos;
 	}
 	
-	// @RequestMapping(value="book/create", method=RequestMethod.POST)
-	@PostMapping("book/create")
-	public void create(@RequestBody SaveBookDto dto) {
+	@RequestMapping(value="book/create", method=RequestMethod.POST)
+	//@PostMapping("book/create")
+	public void createBook(@RequestBody BookDto bookDto) {
+		// SavebookDTo controller toevoegen
+		Book book = new Book();
+		book.setAuthor(bookDto.getAuthor());
+		book.setCategory(bookDto.getCategory());
+		book.setCategory(bookDto.getCategory());
+		book.setEdition(bookDto.getEdition());
+		book.setTitle(bookDto.getTitle());
+		book.setFormat(bookDto.getFormat());
+		book.setISBN(bookDto.getISBN());
+		book.setLanguage(bookDto.getLanguage());
 		
+		service.create(book);
 	}
 	
 }

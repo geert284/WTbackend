@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.repository.IBookRepository;
 
@@ -16,5 +17,12 @@ public class BookService {
 	public List<Book> findAllBooks() {
 		return repository.findAll();
 	}
+
+	
+	public void create(Book book) {
+		repository.save(book);
+	}
+
+
 
 }
