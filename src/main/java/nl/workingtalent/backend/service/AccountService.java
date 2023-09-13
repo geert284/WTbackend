@@ -21,6 +21,10 @@ public class AccountService {
 		return repository.findAll();
 	}
 	
+	public void create(Account account) {
+		repository.save(account);
+	}
+
 	public Optional<Account> findById(long id){
 		return repository.findById(id);
 	}
