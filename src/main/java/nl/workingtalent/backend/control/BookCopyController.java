@@ -29,6 +29,7 @@ public class BookCopyController {
 			bookcopyDto.setStatus(bookcopy.getStatus());
 			bookcopyDto.setAvailable(bookcopy.isAvailable());
 			bookcopyDto.setBookId(bookcopy.getBook().getId());
+			bookcopyDto.setId(bookcopy.getId());
 			
 			dtos.add(bookcopyDto);
 		});
