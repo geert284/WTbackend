@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.entity.Reservation;
 import nl.workingtalent.backend.repository.IReservationRepository;
 
@@ -16,6 +17,10 @@ public class ReservationService {
 	
 	public List<Reservation> findAllReservations() {
 		return repository.findAll();
+	}
+	
+	public void create(Reservation reservation) {
+		repository.save(reservation);
 	}
 
 }
