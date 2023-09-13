@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -30,8 +31,8 @@ public class Reservation {
 	@ManyToOne(optional = false)
 	private Account account;
 
-	@OneToOne(optional = false)
-	@JoinColumn(name = "bookCopy_id")
+	@JsonIgnore
+	@ManyToOne(optional = false)
 	private BookCopy bookCopy;
 
 	public Account getAccount() {

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.workingtalent.backend.entity.AwaitingReservation;
+import nl.workingtalent.backend.entity.Reservation;
 import nl.workingtalent.backend.repository.IAwaitingReservationRepository;
 
 @Service
@@ -16,6 +17,10 @@ public class AwaitingReservationService {
 
 	public List<AwaitingReservation> findAllAwaitingReservations() {
 		return repository.findAll();
+	}
+	
+	public void create(AwaitingReservation awaitingReservation) {
+		repository.save(awaitingReservation);
 	}
 
 }
