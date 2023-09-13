@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.workingtalent.backend.entity.Account;
+import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.repository.IAccountRepository;
 
 
@@ -17,5 +18,9 @@ public class AccountService {
 	
 	public List<Account> findAllAccounts() {
 		return repository.findAll();
+	}
+	
+	public void create(Account account) {
+		repository.save(account);
 	}
 }
