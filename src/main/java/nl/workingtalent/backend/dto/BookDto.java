@@ -3,19 +3,19 @@ package nl.workingtalent.backend.dto;
 public class BookDto {
 
 	private long id;
-	
+
 	private String title;
-	
+
 	private int edition;
-	
+
 	private String ISBN;
-	
+
 	private String author;
-	
+
 	private String category;
-	
-	private String collation;
-	
+
+	private String format;
+
 	private String language;
 
 	public long getId() {
@@ -66,12 +66,12 @@ public class BookDto {
 		this.category = category;
 	}
 
-	public String getCollation() {
-		return collation;
+	public String getFormat() {
+		return format;
 	}
 
-	public void setCollation(String collation) {
-		this.collation = collation;
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	public String getLanguage() {
@@ -81,5 +81,5 @@ public class BookDto {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
-	
+
 }

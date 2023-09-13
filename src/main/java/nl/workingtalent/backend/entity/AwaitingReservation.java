@@ -2,24 +2,49 @@ package nl.workingtalent.backend.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class AwaitingReservation {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(nullable = false)
 	private Date requestDate;
-	
+
 	@Column(nullable = false)
 	private boolean processed;
+
+	@ManyToOne(optional = false)
+	private Book book;
+
+	@ManyToOne(optional = false)
+	private Account account;
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public Book getBook() {
+		return book;
+	}
+
+	public void setBook(Book book) {
+		this.book = book;
+	}
 
 	public long getId() {
 		return id;
