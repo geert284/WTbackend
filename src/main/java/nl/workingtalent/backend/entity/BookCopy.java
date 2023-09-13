@@ -36,14 +36,15 @@ public class BookCopy {
 	@OneToMany(mappedBy = "bookCopy")
 	private List<Loan> loans;
 
-	@OneToOne(mappedBy = "bookCopy", optional = true)
-	private Reservation reservation;
+	@JsonIgnore
+	@OneToMany(mappedBy = "bookCopy")
+	private List<Reservation> reservation;
 
-	public Reservation getReservation() {
+	public List<Reservation> getReservation() {
 		return reservation;
 	}
 
-	public void setReservation(Reservation reservation) {
+	public void setReservation(List<Reservation> reservation) {
 		this.reservation = reservation;
 	}
 
