@@ -79,29 +79,27 @@ public class ReservationController {
 		// get account	
 		Optional<Account> opAccount = accountService.findById(dto.getAccountId());
 		
-		if (bookCopy != null) {
-			System.out.println(bookCopy.getId());
-			Reservation reservation = new Reservation();
-					
-			reservation.setAccount(opAccount.get());
-			reservation.setBookCopy(bookCopy);
-			reservation.setProcessed(false);
-			reservation.setReservationDate(java.sql.Timestamp.valueOf(LocalDateTime.now()));
-			
-			service.create(reservation);
-		}
-		else {
-			Optional<Book> book = bookService.findById(dto.getBookId());
-			
-			AwaitingReservation awaitingReservation = new AwaitingReservation();
-			
-			awaitingReservation.setAccount(opAccount.get());
-			awaitingReservation.setBook(book.get());
-			awaitingReservation.setProcessed(false);
-			awaitingReservation.setRequestDate(java.sql.Timestamp.valueOf(LocalDateTime.now()));
-			
-			awaitingReservationService.create(awaitingReservation);
-		}
+		Reservation reservation = new Reservation();
+
+		reservation.setAccount(opAccount.get());
+		reservation.setBookCopy(opbookCopy.get());
+		reservation.setProcessed(false);
+		reservation.setReservationDate(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+		
+		service.create(reservation);
+//		}
+//		else {
+//			Optional<Book> book = bookService.findById(dto.getBookId());
+//			
+//			AwaitingReservation awaitingReservation = new AwaitingReservation();
+//			
+//			awaitingReservation.setAccount(opAccount.get());
+//			awaitingReservation.setBook(book.get());
+//			awaitingReservation.setProcessed(false);
+//			awaitingReservation.setRequestDate(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+//			
+//			awaitingReservationService.create(awaitingReservation);
+//		}
 		// create reservation if found
 
 		// create awaiting reservation if not found
