@@ -20,8 +20,8 @@ public class BookCopy {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	// @Column(length = 50)
-	// private int tagNumber;
+	@Column(length = 50)
+	private int tagNumber;
 
 	@Column(nullable = false)
 	private boolean available;
