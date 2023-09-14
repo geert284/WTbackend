@@ -20,6 +20,14 @@ public class BookCopyService {
 		return repository.findAll();
 	}
 	
+	public Optional<BookCopy> findFirstAvailableBookCopy(Book book) {
+		return repository.findByBookAndAvailableIsTrue(book);
+	}
+	
+	public void update(BookCopy bookCopy) {
+		repository.save(bookCopy);
+  }
+  
 	public Optional<BookCopy> findById(long id){
 		return repository.findById(id);
 	}
