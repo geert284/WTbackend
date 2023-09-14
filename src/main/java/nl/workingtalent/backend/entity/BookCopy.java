@@ -34,11 +34,11 @@ public class BookCopy {
 	private Book book;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "bookCopy",  orphanRemoval = true, cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = {CascadeType.REMOVE})
 	private List<Loan> loans;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "bookCopy", optional = true, orphanRemoval = true, cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = {CascadeType.REMOVE})
 	private List<Reservation> reservation;
 
 	public List<Reservation> getReservation() {

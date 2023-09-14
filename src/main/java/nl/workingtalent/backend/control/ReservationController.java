@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import nl.workingtalent.backend.dto.CreateReservationDto;
 import nl.workingtalent.backend.dto.ReservationDto;
+import nl.workingtalent.backend.dto.UnprocessedReservationsDto;
 import nl.workingtalent.backend.entity.Account;
 import nl.workingtalent.backend.entity.AwaitingReservation;
 import nl.workingtalent.backend.entity.Book;
@@ -109,4 +110,9 @@ public class ReservationController {
 		}
 	}
 	
+	public List<UnprocessedReservationsDto> getUnproccesedReservations(){
+		List<UnprocessedReservationsDto> dtos = new ArrayList<>();
+		
+		return dtos;
+	}
 }
