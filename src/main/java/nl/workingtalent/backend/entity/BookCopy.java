@@ -37,14 +37,15 @@ public class BookCopy {
 	@OneToMany(mappedBy = "bookCopy",  orphanRemoval = true, cascade = {CascadeType.REMOVE})
 	private List<Loan> loans;
 
-	@OneToOne(mappedBy = "bookCopy", optional = true, orphanRemoval = true, cascade = {CascadeType.REMOVE})
-	private Reservation reservation;
+	@JsonIgnore
+	@OneToMany(mappedBy = "bookCopy", optional = true, orphanRemoval = true, cascade = {CascadeType.REMOVE})
+	private List<Reservation> reservation;
 
-	public Reservation getReservation() {
+	public List<Reservation> getReservation() {
 		return reservation;
 	}
 
-	public void setReservation(Reservation reservation) {
+	public void setReservation(List<Reservation> reservation) {
 		this.reservation = reservation;
 	}
 

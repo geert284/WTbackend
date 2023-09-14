@@ -5,10 +5,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import nl.workingtalent.backend.dto.AccountDto;
+import nl.workingtalent.backend.dto.SaveAccountDto;
 import nl.workingtalent.backend.entity.Account;
 import nl.workingtalent.backend.service.AccountService;
 
@@ -38,5 +41,26 @@ public class AccountController {
 
 		return dtos;
 	}
-
+	
+	@RequestMapping(value="account/create", method=RequestMethod.POST)
+	public void createUser(@RequestBody SaveAccountDto saveAccountDto) {
+		Account account = new Account();
+		account.setEmail(saveAccountDto.getEmail());
+		account.setAdmin(saveAccountDto.isAdmin());
+		
+		service.create(account);
+		
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+

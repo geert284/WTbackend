@@ -1,5 +1,6 @@
 package nl.workingtalent.backend.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -21,7 +23,7 @@ public class Reservation {
 	private long id;
 
 	@Column(nullable = false)
-	private Date reservationDate;
+	private LocalDateTime reservationDate;
 
 	@Column(nullable = false)
 	private boolean processed;
@@ -30,8 +32,8 @@ public class Reservation {
 	@ManyToOne(optional = false)
 	private Account account;
 
-	@OneToOne(optional = false)
-	//@JoinColumn(name = "bookCopy_id")
+	@JsonIgnore
+	@ManyToOne(optional = false)
 	private BookCopy bookCopy;
 
 	public Account getAccount() {
@@ -58,11 +60,11 @@ public class Reservation {
 		this.id = id;
 	}
 
-	public Date getReservationDate() {
+	public LocalDateTime getReservationDate() {
 		return reservationDate;
 	}
 
-	public void setReservationDate(Date reservationDate) {
+	public void setReservationDate(LocalDateTime reservationDate) {
 		this.reservationDate = reservationDate;
 	}
 

@@ -1,5 +1,6 @@
 package nl.workingtalent.backend.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,7 +20,7 @@ public class AwaitingReservation {
 	private long id;
 
 	@Column(nullable = false)
-	private Date requestDate;
+	private LocalDateTime requestDate;
 
 	@Column(nullable = false)
 	private boolean processed;
@@ -54,11 +55,11 @@ public class AwaitingReservation {
 		this.id = id;
 	}
 
-	public Date getRequestDate() {
+	public LocalDateTime getRequestDate() {
 		return requestDate;
 	}
 
-	public void setRequestDate(Date requestDate) {
+	public void setRequestDate(LocalDateTime requestDate) {
 		this.requestDate = requestDate;
 	}
 
