@@ -1,12 +1,12 @@
 package nl.workingtalent.backend.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class ReservationDto {
 
 	private long id;
 
-	private Date reservationDate;
+	private LocalDateTime reservationDate;
 
 	private boolean processed;
 
@@ -22,11 +22,11 @@ public class ReservationDto {
 		this.id = id;
 	}
 
-	public Date getReservationDate() {
+	public LocalDateTime getReservationDate() {
 		return reservationDate;
 	}
 
-	public void setReservationDate(Date reservationDate) {
+	public void setReservationDate(LocalDateTime reservationDate) {
 		this.reservationDate = reservationDate;
 	}
 

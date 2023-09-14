@@ -1,14 +1,14 @@
 package nl.workingtalent.backend.dto;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class LoanDto {
 
 	private long id;
 
-	private Date loanDate;
+	private LocalDateTime loanDate;
 
-	private Date returnDate;
+	private LocalDateTime returnDate;
 
 	private long bookCopy_id;
 
@@ -22,19 +22,19 @@ public class LoanDto {
 		this.id = id;
 	}
 
-	public Date getLoanDate() {
+	public LocalDateTime getLoanDate() {
 		return loanDate;
 	}
 
-	public void setLoanDate(Date loanDate) {
+	public void setLoanDate(LocalDateTime loanDate) {
 		this.loanDate = loanDate;
 	}
 
-	public Date getReturnDate() {
+	public LocalDateTime getReturnDate() {
 		return returnDate;
 	}
 
-	public void setReturnDate(Date returnDate) {
+	public void setReturnDate(LocalDateTime returnDate) {
 		this.returnDate = returnDate;
 	}
 

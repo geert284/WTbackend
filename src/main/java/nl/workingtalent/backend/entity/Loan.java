@@ -1,5 +1,6 @@
 package nl.workingtalent.backend.entity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,10 +20,10 @@ public class Loan {
 	private long id;
 
 	@Column(nullable = false)
-	private Date loanDate;
+	private LocalDateTime loanDate;
 
 	@Column()
-	private Date returnDate;
+	private LocalDateTime returnDate;
 
 	@JsonIgnore
 	@ManyToOne(optional = false)
@@ -56,19 +57,19 @@ public class Loan {
 		this.id = id;
 	}
 
-	public Date getLoanDate() {
+	public LocalDateTime getLoanDate() {
 		return loanDate;
 	}
 
-	public void setLoanDate(Date loanDate) {
+	public void setLoanDate(LocalDateTime loanDate) {
 		this.loanDate = loanDate;
 	}
 
-	public Date getReturnDate() {
+	public LocalDateTime getReturnDate() {
 		return returnDate;
 	}
 
-	public void setReturnDate(Date returnDate) {
+	public void setReturnDate(LocalDateTime returnDate) {
 		this.returnDate = returnDate;
 	}
 
