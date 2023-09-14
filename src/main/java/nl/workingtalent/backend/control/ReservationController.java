@@ -79,7 +79,10 @@ public class ReservationController {
 			reservation.setAccount(opAccount.get());
 			reservation.setBookCopy(bookCopy);
 			reservation.setProcessed(false);
-			reservation.setReservationDate(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+			reservation.setReservationDate(LocalDateTime.now());
+			
+			// change bookCopy to not available
+			
 			
 			service.create(reservation);
 		}
@@ -91,7 +94,7 @@ public class ReservationController {
 			awaitingReservation.setAccount(opAccount.get());
 			awaitingReservation.setBook(book.get());
 			awaitingReservation.setProcessed(false);
-			awaitingReservation.setRequestDate(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+			awaitingReservation.setRequestDate(LocalDateTime.now());
 			
 			awaitingReservationService.create(awaitingReservation);
 		}
