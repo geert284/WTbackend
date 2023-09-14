@@ -67,50 +67,46 @@ public class ReservationController {
 
 	@PostMapping("reservation/create")
 	public void createReservation(@RequestBody CreateReservationDto dto) {
+		
+		Optional<Book> opBook = bookService.findById(dto.getBookId());
+		if (opBook.isEmpty()) {
+			return;
+		}			
+		
 		// find available bookCopy with correct id
-		BookCopy bookCopy = findBookCopyByBookId(dto.getBookId());
+		Optional<BookCopy> opBookCopy = bookCopyService.findFirstAvailableBookCopy(opBook.get());
 		// get account	
 		Optional<Account> opAccount = accountService.findById(dto.getAccountId());
+		if (opAccount.isEmpty()) {
+			return;
+		}	
 		
-		if (bookCopy != null) {
-			System.out.println(bookCopy.getId());
-			Reservation reservation = new Reservation();
-					
-			reservation.setAccount(opAccount.get());
-			reservation.setBookCopy(bookCopy);
-			reservation.setProcessed(false);
-			reservation.setReservationDate(java.sql.Timestamp.valueOf(LocalDateTime.now()));
-			
-			service.create(reservation);
-		}
-		else {
-			Optional<Book> book = bookService.findById(dto.getBookId());
-			
+		// If there is no available copy, make an awaiting reservation, if there is, reserve that book
+		if (opBookCopy.isEmpty()) {	
 			AwaitingReservation awaitingReservation = new AwaitingReservation();
 			
 			awaitingReservation.setAccount(opAccount.get());
-			awaitingReservation.setBook(book.get());
+			awaitingReservation.setBook(opBook.get());
 			awaitingReservation.setProcessed(false);
-			awaitingReservation.setRequestDate(java.sql.Timestamp.valueOf(LocalDateTime.now()));
+			awaitingReservation.setRequestDate(LocalDateTime.now());
 			
 			awaitingReservationService.create(awaitingReservation);
 		}
-		// create reservation if found
+		else{
+			Reservation reservation = new Reservation();
+			BookCopy bookCopy = opBookCopy.get();
 
-		// create awaiting reservation if not found
-
-	}
-
-	// find book copy by id and availability
-	public BookCopy findBookCopyByBookId(long id) {
-		List<BookCopy> books = bookCopyService.findAllBookCopys();
-
-		for (BookCopy book : books) {
-			if (book.isAvailable() && book.getBook().getId() == id) {
-				return book;
-			}
+			reservation.setAccount(opAccount.get());
+			reservation.setBookCopy(bookCopy);
+			reservation.setProcessed(false);
+			reservation.setReservationDate(LocalDateTime.now());
+			
+			// change bookcopy.available to false
+			bookCopy.setAvailable(false);
+			bookCopyService.update(bookCopy);
+			
+			service.create(reservation);
 		}
-		return null;
 	}
-
+	
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,7 +42,7 @@ public class Book {
 	private String language;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "book")
+	@OneToMany(mappedBy = "book", orphanRemoval = true, cascade = {CascadeType.REMOVE})
 	private List<BookCopy> copies;
 
 	@JsonIgnore
