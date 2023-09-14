@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import nl.workingtalent.backend.entity.Account;
-import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.repository.IAccountRepository;
 
 
@@ -24,7 +23,7 @@ public class AccountService {
 	public void create(Account account) {
 		repository.save(account);
 	}
-	
+
 	public Optional<Account> findById(long id){
 		return repository.findById(id);
 	}
