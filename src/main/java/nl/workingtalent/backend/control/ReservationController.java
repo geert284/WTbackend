@@ -67,8 +67,15 @@ public class ReservationController {
 
 	@PostMapping("reservation/create")
 	public void createReservation(@RequestBody CreateReservationDto dto) {
+		Optional<Book> opBook = bookService.findById(dto.getBookId());
+		if (opBook.isEmpty())
+			return;
+		
 		// find available bookCopy with correct id
-		BookCopy bookCopy = findBookCopyByBookId(dto.getBookId());
+		Optional<BookCopy> opbookCopy = bookCopyService.vindEerstBeschikbaarBookCopy(opBook.get());
+		if (opbookCopy.isEmpty())
+			return;
+
 		// get account	
 		Optional<Account> opAccount = accountService.findById(dto.getAccountId());
 		
@@ -99,18 +106,6 @@ public class ReservationController {
 
 		// create awaiting reservation if not found
 
-	}
-
-	// find book copy by id and availability
-	public BookCopy findBookCopyByBookId(long id) {
-		List<BookCopy> books = bookCopyService.findAllBookCopys();
-
-		for (BookCopy book : books) {
-			if (book.isAvailable() && book.getBook().getId() == id) {
-				return book;
-			}
-		}
-		return null;
 	}
 
 }

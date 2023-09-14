@@ -1,10 +1,12 @@
 package nl.workingtalent.backend.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.entity.BookCopy;
 import nl.workingtalent.backend.repository.IBookCopyRepository;
 
@@ -16,5 +18,9 @@ public class BookCopyService {
 	
 	public List<BookCopy> findAllBookCopys() {
 		return repository.findAll();
+	}
+	
+	public Optional<BookCopy> vindEerstBeschikbaarBookCopy(Book book) {
+		return repository.findByBookAndAvailableIsTrue(book);
 	}
 }
