@@ -2,9 +2,11 @@ package nl.workingtalent.backend.control;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +31,7 @@ public class BookCopyController {
 			bookcopyDto.setStatus(bookcopy.getStatus());
 			bookcopyDto.setAvailable(bookcopy.isAvailable());
 			bookcopyDto.setBookId(bookcopy.getBook().getId());
+			bookcopyDto.setId(bookcopy.getId());
 			
 			dtos.add(bookcopyDto);
 		});
@@ -36,4 +39,8 @@ public class BookCopyController {
 		return dtos;
 	}
 
+	@RequestMapping("bookcopy/{id}")
+	public Optional<BookCopy> findBookCopy(@PathVariable long id) {
+		return service.findById(id);
+	}
 }

@@ -31,7 +31,7 @@ public class Reservation {
 	private Account account;
 
 	@OneToOne(optional = false)
-	@JoinColumn(name = "bookCopy_id")
+	//@JoinColumn(name = "bookCopy_id")
 	private BookCopy bookCopy;
 
 	public Account getAccount() {
