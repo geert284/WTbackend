@@ -21,7 +21,7 @@ public class BookCopyService {
 	}
 	
 	public Optional<BookCopy> findFirstAvailableBookCopy(Book book) {
-		return repository.findByBookAndAvailableIsTrue(book);
+		return repository.findFirstByBookAndAvailableIsTrue(book);
 	}
 	
 	public void update(BookCopy bookCopy) {

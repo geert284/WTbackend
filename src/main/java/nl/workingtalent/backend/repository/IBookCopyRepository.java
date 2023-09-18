@@ -9,6 +9,6 @@ import nl.workingtalent.backend.entity.BookCopy;
 
 public interface IBookCopyRepository extends JpaRepository<BookCopy, Long>{
 
-	Optional<BookCopy> findByBookAndAvailableIsTrue(Book book);
+	Optional<BookCopy> findFirstByBookAndAvailableIsTrue(Book book);
 	
 }

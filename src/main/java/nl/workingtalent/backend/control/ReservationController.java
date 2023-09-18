@@ -77,13 +77,16 @@ public class ReservationController {
 		// find available bookCopy with correct id
 		Optional<BookCopy> opBookCopy = bookCopyService.findFirstAvailableBookCopy(opBook.get());
 		// get account	
+		System.out.println("4"); 
 		Optional<Account> opAccount = accountService.findById(dto.getAccountId());
 		if (opAccount.isEmpty()) {
 			return;
 		}	
+		System.out.println("1"); 
 		
 		// If there is no available copy, make an awaiting reservation, if there is, reserve that book
 		if (opBookCopy.isEmpty()) {	
+			System.out.println("2"); 
 			AwaitingReservation awaitingReservation = new AwaitingReservation();
 			
 			awaitingReservation.setAccount(opAccount.get());
@@ -94,6 +97,7 @@ public class ReservationController {
 			awaitingReservationService.create(awaitingReservation);
 		}
 		else{
+			System.out.println("3"); 
 			Reservation reservation = new Reservation();
 			BookCopy bookCopy = opBookCopy.get();
 
