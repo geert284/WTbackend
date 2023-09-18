@@ -35,14 +35,16 @@ public class Book {
 	private String category;
 
 	@Column(length = 50, nullable = false)
-
 	private String format;
-	
+
 	@Column(length = 50, nullable = false)
 	private String language;
 
+	@Column(nullable = false)
+	private boolean outOfUse;
+
 	@JsonIgnore
-	@OneToMany(mappedBy = "book", orphanRemoval = true, cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "book", orphanRemoval = true, cascade = { CascadeType.REMOVE })
 	private List<BookCopy> copies;
 
 	@JsonIgnore
@@ -127,6 +129,14 @@ public class Book {
 
 	public void setCopies(List<BookCopy> copies) {
 		this.copies = copies;
+	}
+
+	public boolean isOutOfUse() {
+		return outOfUse;
+	}
+
+	public void setOutOfUse(boolean outOfUse) {
+		this.outOfUse = outOfUse;
 	}
 
 }

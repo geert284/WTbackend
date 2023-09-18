@@ -33,12 +33,15 @@ public class BookCopy {
 	@ManyToOne(optional = false)
 	private Book book;
 
+	@Column(nullable = false)
+	private boolean outOfUse;
+
 	@JsonIgnore
-	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = { CascadeType.REMOVE })
 	private List<Loan> loans;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = { CascadeType.REMOVE })
 	private List<Reservation> reservation;
 
 	public int getTagNumber() {
@@ -95,6 +98,14 @@ public class BookCopy {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public boolean isOutOfUse() {
+		return outOfUse;
+	}
+
+	public void setOutOfUse(boolean outOfUse) {
+		this.outOfUse = outOfUse;
 	}
 
 }
