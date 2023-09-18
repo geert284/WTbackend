@@ -41,6 +41,14 @@ public class BookCopy {
 	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = {CascadeType.REMOVE})
 	private List<Reservation> reservation;
 
+	public int getTagNumber() {
+		return tagNumber;
+	}
+
+	public void setTagNumber(int tagNumber) {
+		this.tagNumber = tagNumber;
+	}
+
 	public List<Reservation> getReservation() {
 		return reservation;
 	}

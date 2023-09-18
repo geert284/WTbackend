@@ -17,4 +17,12 @@ public class LoanService {
 	public List<Loan> findAllLoans() {
 		return repository.findAll();
 	}
+	
+	public List<Loan> findAllActiveLoans(){
+		return repository.findByReturnDateIsNull();
+	}
+	
+	public List<Loan> findAllFinishedLoans(){
+		return repository.findByReturnDateIsNotNull();
+	}
 }
