@@ -21,8 +21,8 @@ public class BookCopy {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
-	// @Column(length = 50)
-	// private int tagNumber;
+	@Column(length = 50)
+	private int tagNumber;
 
 	@Column(nullable = false)
 	private boolean available;
@@ -33,12 +33,19 @@ public class BookCopy {
 	@ManyToOne(optional = false)
 	private Book book;
 
+	public int getTagNumber() {
+		return tagNumber;
+	}
+
+	@Column(nullable = false)
+	private boolean outOfUse;
+
 	@JsonIgnore
-	@OneToMany(mappedBy = "bookCopy",  orphanRemoval = true, cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = { CascadeType.REMOVE })
 	private List<Loan> loans;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = {CascadeType.REMOVE})
+	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = { CascadeType.REMOVE })
 	private List<Reservation> reservation;
 
 	public List<Reservation> getReservation() {
@@ -87,6 +94,18 @@ public class BookCopy {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public void setTagNumber(int tagNumber) {
+		this.tagNumber = tagNumber;
+	}
+
+	public boolean isOutOfUse() {
+		return outOfUse;
+	}
+
+	public void setOutOfUse(boolean outOfUse) {
+		this.outOfUse = outOfUse;
 	}
 
 }
