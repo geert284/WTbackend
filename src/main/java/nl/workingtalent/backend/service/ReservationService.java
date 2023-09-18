@@ -23,4 +23,11 @@ public class ReservationService {
 		repository.save(reservation);
 	}
 
+	public List<Reservation> findAllUnprocessed(){
+		return repository.findByProcessedFalse();
+	}
+	
+	public List<Reservation> findAllProcessed(){
+		return repository.findByProcessedTrue();
+	}
 }

@@ -33,10 +33,6 @@ public class BookCopy {
 	@ManyToOne(optional = false)
 	private Book book;
 
-	public int getTagNumber() {
-		return tagNumber;
-	}
-
 	@Column(nullable = false)
 	private boolean outOfUse;
 
@@ -47,6 +43,14 @@ public class BookCopy {
 	@JsonIgnore
 	@OneToMany(mappedBy = "bookCopy", orphanRemoval = true, cascade = { CascadeType.REMOVE })
 	private List<Reservation> reservation;
+
+	public int getTagNumber() {
+		return tagNumber;
+	}
+
+	public void setTagNumber(int tagNumber) {
+		this.tagNumber = tagNumber;
+	}
 
 	public List<Reservation> getReservation() {
 		return reservation;
@@ -94,10 +98,6 @@ public class BookCopy {
 
 	public void setStatus(String status) {
 		this.status = status;
-	}
-
-	public void setTagNumber(int tagNumber) {
-		this.tagNumber = tagNumber;
 	}
 
 	public boolean isOutOfUse() {

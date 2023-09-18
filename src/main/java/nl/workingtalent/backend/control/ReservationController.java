@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import nl.workingtalent.backend.dto.CreateReservationDto;
 import nl.workingtalent.backend.dto.ReservationDto;
+import nl.workingtalent.backend.dto.ReservationHistoryDto;
+import nl.workingtalent.backend.dto.UnprocessedReservationsDto;
 import nl.workingtalent.backend.entity.Account;
 import nl.workingtalent.backend.entity.AwaitingReservation;
 import nl.workingtalent.backend.entity.Book;
@@ -109,4 +111,69 @@ public class ReservationController {
 		}
 	}
 	
+	@RequestMapping("reservation/unprocessed")
+	public List<UnprocessedReservationsDto> getUnproccesedReservations(){
+		List<UnprocessedReservationsDto> dtos = new ArrayList<>();
+		// find all reservations and awaitingRes which are unprocessed
+		List<Reservation> reservations = service.findAllUnprocessed();
+		List<AwaitingReservation> awaitingReservations = awaitingReservationService.findAllUnprocessed();
+		
+		reservations.forEach(reservation -> {
+			UnprocessedReservationsDto dto = new UnprocessedReservationsDto();
+			String name = reservation.getAccount().getFirstName() + " " + reservation.getAccount().getLastName();
+			dto.setAccountName(name);
+			dto.setReservationDate(reservation.getReservationDate());
+			dto.setTagNumber(reservation.getBookCopy().getTagNumber());
+			dto.setTitle(reservation.getBookCopy().getBook().getTitle());
+			dto.setAvailable(true);
+			
+			dtos.add(dto);
+		});
+		
+		awaitingReservations.forEach(reservation -> {
+			UnprocessedReservationsDto dto = new UnprocessedReservationsDto();
+			String name = reservation.getAccount().getFirstName() + " " + reservation.getAccount().getLastName();
+			dto.setAccountName(name);
+			dto.setReservationDate(reservation.getRequestDate());
+			dto.setTitle(reservation.getBook().getTitle());
+			dto.setAvailable(false);
+			
+			dtos.add(dto);
+		});
+				
+		return dtos;
+	}
+	
+	@RequestMapping("reservation/processed")
+	public List<ReservationHistoryDto> getProcessedReservations(){
+		List<ReservationHistoryDto> dtos = new ArrayList<>();
+		
+		List<Reservation> reservations = service.findAllProcessed();
+		List<AwaitingReservation> awaitingReservations = awaitingReservationService.findAllProcessed();
+		
+		reservations.forEach(reservation -> {
+			ReservationHistoryDto dto = new ReservationHistoryDto();
+			String name = reservation.getAccount().getFirstName() + " " + reservation.getAccount().getLastName();
+			dto.setAccountName(name);
+			dto.setReservationDate(reservation.getReservationDate());
+			dto.setTagNumber(reservation.getBookCopy().getTagNumber());
+			dto.setTitle(reservation.getBookCopy().getBook().getTitle());
+			dto.setType("Reservering van beschikbaar boek");
+			
+			dtos.add(dto);
+		});
+		
+		awaitingReservations.forEach(reservation -> {
+			ReservationHistoryDto dto = new ReservationHistoryDto();
+			String name = reservation.getAccount().getFirstName() + " " + reservation.getAccount().getLastName();
+			dto.setAccountName(name);
+			dto.setReservationDate(reservation.getRequestDate());
+			dto.setTitle(reservation.getBook().getTitle());
+			dto.setType("Reservering van uitgeleend boek");
+			
+			dtos.add(dto);			
+		});
+		
+		return dtos;
+	}
 }

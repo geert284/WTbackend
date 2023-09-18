@@ -35,7 +35,6 @@ public class Book {
 	private String category;
 
 	@Column(length = 50, nullable = false)
-
 	private String format;
 
 	@Column(length = 50, nullable = false)
