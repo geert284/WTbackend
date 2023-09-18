@@ -5,6 +5,8 @@ public class AccountDto {
 	private long id;
 
 	private String email;
+	
+	private String password;
 
 	private String firstName;
 
@@ -51,5 +53,15 @@ public class AccountDto {
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	
 
 }
