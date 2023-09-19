@@ -18,6 +18,8 @@ public class BookUpdateDto {
 
 	private String language;
 
+	private boolean outOfUse;
+
 	public long getId() {
 		return id;
 	}
@@ -81,4 +83,13 @@ public class BookUpdateDto {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+
+	public boolean isOutOfUse() {
+		return outOfUse;
+	}
+
+	public void setOutOfUse(boolean outOfUse) {
+		this.outOfUse = outOfUse;
+	}
+
 }

@@ -34,4 +34,10 @@ public class BookService {
 		
 	}
 
+
+	public void update(Book book) {
+		repository.save(book);
+		
+	}
+
 }
