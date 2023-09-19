@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import nl.workingtalent.backend.entity.Account;
 
 public interface IAccountRepository extends JpaRepository<Account, Long> {
-	// Vind alle accounts met die email adres
+		// Vind alle accounts met die email adres
 		Optional<Account> findByEmail(String email);
 
 		// Tel aantal accounts met die email adres

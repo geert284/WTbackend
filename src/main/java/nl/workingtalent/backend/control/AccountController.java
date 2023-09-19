@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import nl.workingtalent.backend.dto.AccountDto;
 import nl.workingtalent.backend.dto.LoginRequestDto;
 import nl.workingtalent.backend.dto.LoginResponseDto;
 import nl.workingtalent.backend.dto.SaveAccountDto;
+import nl.workingtalent.backend.dto.SavePersonalInfoDto;
 import nl.workingtalent.backend.entity.Account;
 import nl.workingtalent.backend.service.AccountService;
 
@@ -55,7 +57,25 @@ public class AccountController {
 		Account account = new Account();
 		account.setEmail(saveAccountDto.getEmail());
 		account.setAdmin(saveAccountDto.isAdmin());
+		account.setPassword(encryptPassword("WTRegister_123"));
 		service.create(account);
+		
+	}
+	
+	
+//	// Use POST instead ?
+	@RequestMapping(value="account/saveInfo/{id}", method=RequestMethod.POST)
+	public void saveInfo(@PathVariable long id, @RequestBody SavePersonalInfoDto dto) {
+		Optional<Account> optionalAccount = service.findById(id);
+		if (optionalAccount.isEmpty()) {
+			return;
+		}
+		Account account = optionalAccount.get();
+		
+		account.setFirstName(dto.getFirstName());
+		account.setLastName(dto.getLastName());
+		account.setPassword(encryptPassword(dto.getPassword()));
+		service.save(account);
 		
 	}
 	
@@ -85,7 +105,9 @@ public class AccountController {
 			LoginResponseDto responseDto = new LoginResponseDto();
 			responseDto.setSuccess(true);
 			responseDto.setAdmin(account.isAdmin());
-			responseDto.setName(account.getFirstName() + " " + account.getLastName());
+			responseDto.setLastName(account.getLastName());
+			responseDto.setFirstName(account.getFirstName());
+			responseDto.setId(account.getId());
 			responseDto.setToken(newToken);
 			return responseDto;
 
@@ -95,7 +117,7 @@ public class AccountController {
 		responseDto.setSuccess(false);
 		return responseDto;
 	}
-	
+
 	public String generateToken() {
 		int leftLimit = 97; // letter 'a'
 	    int rightLimit = 122; // letter 'z'
@@ -108,6 +130,12 @@ public class AccountController {
 	      .toString();
 
 	    return generatedString;
+	}
+	
+	
+	public String encryptPassword(String myPassword) {
+		String pwHash = BCrypt.withDefaults().hashToString(12, myPassword.toCharArray());
+		return pwHash;
 	}
 	
 }
