@@ -21,7 +21,7 @@ import nl.workingtalent.backend.dto.SaveBookDto;
 import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.service.BookService;
 
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin
 @RestController
 public class BookController {
 
