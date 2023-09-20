@@ -84,7 +84,6 @@ public class BookCopyController {
 
 		dbBookCopy.setStatus(bookCopyUpdateDto.getStatus());
 		dbBookCopy.setAvailable(bookCopyUpdateDto.isAvailable());
-		dbBookCopy.setId(bookCopyUpdateDto.getId());
 		dbBookCopy.setOutOfUse(bookCopyUpdateDto.isOutOfUse());
 
 		service.update(dbBookCopy);
