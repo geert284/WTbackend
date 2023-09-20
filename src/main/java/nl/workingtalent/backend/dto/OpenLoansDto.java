@@ -10,6 +10,16 @@ public class OpenLoansDto {
 	
 	private int tagNumber;
 	
+	private long loanId;
+	
+	public long getLoanId() {
+		return loanId;
+	}
+
+	public void setLoanId(long l) {
+		this.loanId = l;
+	}
+
 	public LocalDateTime getLoanDate() {
 		return loanDate;
 	}

@@ -126,6 +126,7 @@ public class ReservationController {
 			dto.setTagNumber(reservation.getBookCopy().getTagNumber());
 			dto.setTitle(reservation.getBookCopy().getBook().getTitle());
 			dto.setAvailable(true);
+			dto.setId(reservation.getId());
 			
 			dtos.add(dto);
 		});
