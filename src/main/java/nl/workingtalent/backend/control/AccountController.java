@@ -86,6 +86,7 @@ public class AccountController {
 		if (optionalAccount.isEmpty()) {
 			LoginResponseDto responseDto = new LoginResponseDto();
 			responseDto.setSuccess(false);
+			responseDto.setErrorMessage("wrong email");
 			return responseDto;
 		}
 
@@ -115,6 +116,7 @@ public class AccountController {
 
 		LoginResponseDto responseDto = new LoginResponseDto();
 		responseDto.setSuccess(false);
+		responseDto.setErrorMessage("wrong password");
 		return responseDto;
 	}
 
