@@ -19,8 +19,12 @@ public class AccountService {
 	public List<Account> findAllAccounts() {
 		return repository.findAll();
 	}
-	
+
 	public void create(Account account) {
+		repository.save(account);
+	}
+	
+	public void save(Account account) {
 		repository.save(account);
 	}
 

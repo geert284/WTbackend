@@ -22,6 +22,7 @@ import nl.workingtalent.backend.dto.LoginRequestDto;
 import nl.workingtalent.backend.dto.LoginResponseDto;
 import nl.workingtalent.backend.dto.SaveAccountDto;
 import nl.workingtalent.backend.dto.UnprocessedReservationsDto;
+import nl.workingtalent.backend.dto.SavePersonalInfoDto;
 import nl.workingtalent.backend.entity.Account;
 import nl.workingtalent.backend.entity.AwaitingReservation;
 import nl.workingtalent.backend.entity.Reservation;
@@ -68,10 +69,29 @@ public class AccountController {
 		Account account = new Account();
 		account.setEmail(saveAccountDto.getEmail());
 		account.setAdmin(saveAccountDto.isAdmin());
+		account.setPassword(encryptPassword("WTRegister_123"));
 		service.create(account);
 
 	}
 
+	
+//	// Use POST instead ?
+	@RequestMapping(value="account/saveInfo/{id}", method=RequestMethod.POST)
+	public void saveInfo(@PathVariable long id, @RequestBody SavePersonalInfoDto dto) {
+		Optional<Account> optionalAccount = service.findById(id);
+		if (optionalAccount.isEmpty()) {
+			return;
+		}
+		Account account = optionalAccount.get();
+		
+		account.setFirstName(dto.getFirstName());
+		account.setLastName(dto.getLastName());
+		account.setPassword(encryptPassword(dto.getPassword()));
+		service.save(account);
+		
+	}
+	
+	
 	@PostMapping("account/login")
 	public LoginResponseDto login(@RequestBody LoginRequestDto dto) {
 		Optional<Account> optionalAccount = service.findByEmail(dto.getEmail());
@@ -97,7 +117,9 @@ public class AccountController {
 			LoginResponseDto responseDto = new LoginResponseDto();
 			responseDto.setSuccess(true);
 			responseDto.setAdmin(account.isAdmin());
-			responseDto.setName(account.getFirstName() + " " + account.getLastName());
+			responseDto.setLastName(account.getLastName());
+			responseDto.setFirstName(account.getFirstName());
+			responseDto.setId(account.getId());
 			responseDto.setToken(newToken);
 			return responseDto;
 
@@ -119,6 +141,15 @@ public class AccountController {
 
 		return generatedString;
 	}
+
+	
+	public String encryptPassword(String myPassword) {
+		String pwHash = BCrypt.withDefaults().hashToString(12, myPassword.toCharArray());
+		return pwHash;
+	}
+	
+}
+
 
 	@RequestMapping("account/getReservations/{token}")
 	public List<AccountReservationsDto> getAllReservations(@PathVariable String token) {
