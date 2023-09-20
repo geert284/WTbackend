@@ -11,4 +11,6 @@ public interface IReservationRepository extends JpaRepository<Reservation, Long>
 	List<Reservation> findByProcessedFalse();
 	
 	List<Reservation> findByProcessedTrue();
+	
+	List<Reservation> findByAccountIdAndProcessedFalse(long accountId);
 }

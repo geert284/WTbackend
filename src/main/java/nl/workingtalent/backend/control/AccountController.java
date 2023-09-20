@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 import nl.workingtalent.backend.dto.AccountDto;
+import nl.workingtalent.backend.dto.AccountReservationsDto;
 import nl.workingtalent.backend.dto.LoginRequestDto;
 import nl.workingtalent.backend.dto.LoginResponseDto;
 import nl.workingtalent.backend.dto.SaveAccountDto;
+import nl.workingtalent.backend.dto.UnprocessedReservationsDto;
+import nl.workingtalent.backend.dto.SavePersonalInfoDto;
 import nl.workingtalent.backend.entity.Account;
+import nl.workingtalent.backend.entity.AwaitingReservation;
+import nl.workingtalent.backend.entity.Reservation;
 import nl.workingtalent.backend.service.AccountService;
+import nl.workingtalent.backend.service.AwaitingReservationService;
+import nl.workingtalent.backend.service.ReservationService;
 
 @CrossOrigin
 @RestController
@@ -28,6 +36,12 @@ public class AccountController {
 
 	@Autowired
 	private AccountService service;
+
+	@Autowired
+	private ReservationService reservationService;
+
+	@Autowired
+	private AwaitingReservationService awaitingReservationService;
 
 	@RequestMapping("account/all")
 	public List<AccountDto> getAccounts() {
@@ -49,13 +63,31 @@ public class AccountController {
 
 		return dtos;
 	}
-	
-	@RequestMapping(value="account/create", method=RequestMethod.POST)
+
+	@RequestMapping(value = "account/create", method = RequestMethod.POST)
 	public void createUser(@RequestBody SaveAccountDto saveAccountDto) {
 		Account account = new Account();
 		account.setEmail(saveAccountDto.getEmail());
 		account.setAdmin(saveAccountDto.isAdmin());
+		account.setPassword(encryptPassword("WTRegister_123"));
 		service.create(account);
+
+	}
+
+	
+//	// Use POST instead ?
+	@RequestMapping(value="account/saveInfo/{id}", method=RequestMethod.POST)
+	public void saveInfo(@PathVariable long id, @RequestBody SavePersonalInfoDto dto) {
+		Optional<Account> optionalAccount = service.findById(id);
+		if (optionalAccount.isEmpty()) {
+			return;
+		}
+		Account account = optionalAccount.get();
+		
+		account.setFirstName(dto.getFirstName());
+		account.setLastName(dto.getLastName());
+		account.setPassword(encryptPassword(dto.getPassword()));
+		service.save(account);
 		
 	}
 	
@@ -66,6 +98,7 @@ public class AccountController {
 		if (optionalAccount.isEmpty()) {
 			LoginResponseDto responseDto = new LoginResponseDto();
 			responseDto.setSuccess(false);
+			responseDto.setErrorMessage("wrong email");
 			return responseDto;
 		}
 
@@ -85,7 +118,9 @@ public class AccountController {
 			LoginResponseDto responseDto = new LoginResponseDto();
 			responseDto.setSuccess(true);
 			responseDto.setAdmin(account.isAdmin());
-			responseDto.setName(account.getFirstName() + " " + account.getLastName());
+			responseDto.setLastName(account.getLastName());
+			responseDto.setFirstName(account.getFirstName());
+			responseDto.setId(account.getId());
 			responseDto.setToken(newToken);
 			return responseDto;
 
@@ -93,33 +128,70 @@ public class AccountController {
 
 		LoginResponseDto responseDto = new LoginResponseDto();
 		responseDto.setSuccess(false);
+		responseDto.setErrorMessage("wrong password");
 		return responseDto;
 	}
-	
+
 	public String generateToken() {
 		int leftLimit = 97; // letter 'a'
-	    int rightLimit = 122; // letter 'z'
-	    int targetStringLength = 50;
-	    Random random = new Random();
+		int rightLimit = 122; // letter 'z'
+		int targetStringLength = 50;
+		Random random = new Random();
 
-	    String generatedString = random.ints(leftLimit, rightLimit + 1)
-	      .limit(targetStringLength)
-	      .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-	      .toString();
+		String generatedString = random.ints(leftLimit, rightLimit + 1).limit(targetStringLength)
+				.collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
 
-	    return generatedString;
+		return generatedString;
+	}
+
+	
+	public String encryptPassword(String myPassword) {
+		String pwHash = BCrypt.withDefaults().hashToString(12, myPassword.toCharArray());
+		return pwHash;
 	}
 	
 }
 
 
+	@RequestMapping("account/getReservations/{token}")
+	public List<AccountReservationsDto> getAllReservations(@PathVariable String token) {
+		List<AccountReservationsDto> dtos = new ArrayList<>();
 
+		// find account using token
+		Optional<Account> opAccount = service.findByToken(token);
+		if (opAccount.isEmpty()) {
+			return null;
+		}
+		Account account = opAccount.get();
 
+		// find all reservations using account
+		List<Reservation> reservations = reservationService.findAllForAccount(account.getId());
 
+		// find all awaiting reservations using account
+		List<AwaitingReservation> awaitingReservations = awaitingReservationService.findAllForAccount(account.getId());
 
+		reservations.forEach(reservation -> {
+			AccountReservationsDto dto = new AccountReservationsDto();
+			dto.setReservationDate(reservation.getReservationDate());
+			dto.setTagNumber(reservation.getBookCopy().getTagNumber());
+			dto.setTitle(reservation.getBookCopy().getBook().getTitle());
+			dto.setAvailable(true);
+			dto.setId(reservation.getId());
 
+			dtos.add(dto);
+		});
 
+		awaitingReservations.forEach(reservation -> {
+			AccountReservationsDto dto = new AccountReservationsDto();
+			dto.setReservationDate(reservation.getRequestDate());
+			dto.setTitle(reservation.getBook().getTitle());
+			dto.setAvailable(false);
+			dto.setId(reservation.getId());
 
+			dtos.add(dto);
+		});
 
+		return dtos;
+	}
 
-
+}

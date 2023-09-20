@@ -2,7 +2,7 @@ package nl.workingtalent.backend.dto;
 
 import java.time.LocalDateTime;
 
-public class UnprocessedReservationsDto {
+public class AccountReservationsDto {
 
 	private LocalDateTime reservationDate;
 
@@ -10,27 +10,9 @@ public class UnprocessedReservationsDto {
 	
 	private int tagNumber;
 	
-	private String accountName;
-	
 	private boolean available;
 	
 	private long id;
-
-	public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public boolean isAvailable() {
-		return available;
-	}
-
-	public void setAvailable(boolean available) {
-		this.available = available;
-	}
 
 	public LocalDateTime getReservationDate() {
 		return reservationDate;
@@ -56,13 +38,20 @@ public class UnprocessedReservationsDto {
 		this.tagNumber = tagNumber;
 	}
 
-	public String getAccountName() {
-		return accountName;
+	public boolean isAvailable() {
+		return available;
 	}
 
-	public void setAccountName(String accountName) {
-		this.accountName = accountName;
+	public void setAvailable(boolean available) {
+		this.available = available;
 	}
-	
-	
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+
 }
