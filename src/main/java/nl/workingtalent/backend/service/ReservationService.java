@@ -40,4 +40,8 @@ public class ReservationService {
 	public Optional<Reservation> findById(long id){
 		return repository.findById(id);
 	}
+	
+	public List<Reservation> findAllForAccount(long id){
+		return repository.findByAccountIdAndProcessedFalse(id);
+	}
 }

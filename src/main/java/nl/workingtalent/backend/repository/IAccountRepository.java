@@ -1,5 +1,6 @@
 package nl.workingtalent.backend.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface IAccountRepository extends JpaRepository<Account, Long> {
 
 		// Optional<Account> findByIdSortingDesc(long id);
 	
+		Optional<Account> findByToken(String token);
 }
