@@ -149,9 +149,6 @@ public class AccountController {
 		String pwHash = BCrypt.withDefaults().hashToString(12, myPassword.toCharArray());
 		return pwHash;
 	}
-	
-}
-
 
 	@RequestMapping("account/getReservations/{token}")
 	public List<AccountReservationsDto> getAllReservations(@PathVariable String token) {
