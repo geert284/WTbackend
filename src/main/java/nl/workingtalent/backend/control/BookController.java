@@ -21,7 +21,8 @@ import nl.workingtalent.backend.dto.SaveBookDto;
 import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.service.BookService;
 
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+// @CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin
 @RestController
 public class BookController {
 
@@ -78,19 +79,17 @@ public class BookController {
 	@PostMapping("book/delete/{id}")
 	public void deleteBook(@PathVariable long id) {
 
-
 		service.deleteBook(id);
 	}
-	
 
 	@RequestMapping(method = RequestMethod.POST, value = "book/update/{id}")
 	public void updateBook(@PathVariable long id, @RequestBody BookUpdateDto bookUpdateDto) {
-		Optional<Book>optional = service.findById(id);
+		Optional<Book> optional = service.findById(id);
 		if (optional.isEmpty()) {
 			return;
 		}
 		Book dbBook = optional.get();
-		
+
 		dbBook.setAuthor(bookUpdateDto.getAuthor());
 		dbBook.setCategory(bookUpdateDto.getCategory());
 		dbBook.setCategory(bookUpdateDto.getCategory());
@@ -100,10 +99,9 @@ public class BookController {
 		dbBook.setISBN(bookUpdateDto.getISBN());
 		dbBook.setLanguage(bookUpdateDto.getLanguage());
 		dbBook.setOutOfUse(false);
-		
+
 		service.update(dbBook);
-		
-		
+
 	}
 
 }
