@@ -74,24 +74,22 @@ public class AccountController {
 
 	}
 
-	
 //	// Use POST instead ?
-	@RequestMapping(value="account/saveInfo/{id}", method=RequestMethod.POST)
+	@RequestMapping(value = "account/saveInfo/{id}", method = RequestMethod.POST)
 	public void saveInfo(@PathVariable long id, @RequestBody SavePersonalInfoDto dto) {
 		Optional<Account> optionalAccount = service.findById(id);
 		if (optionalAccount.isEmpty()) {
 			return;
 		}
 		Account account = optionalAccount.get();
-		
+
 		account.setFirstName(dto.getFirstName());
 		account.setLastName(dto.getLastName());
 		account.setPassword(encryptPassword(dto.getPassword()));
 		service.save(account);
-		
+
 	}
-	
-	
+
 	@PostMapping("account/login")
 	public LoginResponseDto login(@RequestBody LoginRequestDto dto) {
 		Optional<Account> optionalAccount = service.findByEmail(dto.getEmail());
@@ -144,7 +142,6 @@ public class AccountController {
 		return generatedString;
 	}
 
-	
 	public String encryptPassword(String myPassword) {
 		String pwHash = BCrypt.withDefaults().hashToString(12, myPassword.toCharArray());
 		return pwHash;
