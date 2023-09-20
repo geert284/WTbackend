@@ -14,4 +14,6 @@ public interface IAwaitingReservationRepository extends JpaRepository<AwaitingRe
 	List<AwaitingReservation> findByProcessedTrue();
 	
 	Optional<AwaitingReservation> findFirstByProcessedFalseAndBookIdOrderByRequestDate(long bookId);
+	
+	List<AwaitingReservation> findByAccountIdAndProcessedFalse(long accountId);
 }

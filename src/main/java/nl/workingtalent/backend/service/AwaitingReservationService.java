@@ -38,4 +38,12 @@ public class AwaitingReservationService {
 	public void update(AwaitingReservation awaitingReservation) {
 		repository.save(awaitingReservation);
 	}
+	
+	public List<AwaitingReservation> findAllForAccount(long id){
+		return repository.findByAccountIdAndProcessedFalse(id);
+	}
+	
+	public Optional<AwaitingReservation> findById(long id){
+		return repository.findById(id);
+	}
 }

@@ -35,6 +35,8 @@ public class AccountService {
 	public Optional<Account> findByEmail(String email){
 		return repository.findByEmail(email);
 	}
-
-
+	
+	public Optional<Account> findByToken(String token){
+		return repository.findByToken(token);
+	}
 }
