@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nl.workingtalent.backend.dto.BookDto;
 import nl.workingtalent.backend.dto.BookUpdateDto;
-import nl.workingtalent.backend.dto.DeleteBookDto;
-import nl.workingtalent.backend.dto.SaveBookDto;
+import nl.workingtalent.backend.entity.Account;
 import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.service.BookService;
 
@@ -29,7 +28,25 @@ public class BookController {
 	private BookService service;
 
 	@RequestMapping("book/all")
-	public List<BookDto> getBooks() {
+	public List<BookDto> getBooks(HttpServletRequest request) {
+		// Account ophalen
+		Account account = (Account)request.getAttribute("WT_ACCOUNT");
+		
+		// Als account onbekend
+		if (account == null) {
+			System.out.println("account is null");
+			// Lege lijst terug
+			return null;
+		}
+		// Als geen admin dan mag je geen boeken opvragen
+		if (!account.isAdmin()) {
+			System.out.println("account is geen admin");
+			return null;
+		}
+
+		System.out.println("account heeft rechten");
+
+		
 		List<Book> books = service.findAllBooks();
 
 		List<BookDto> dtos = new ArrayList<>();
