@@ -96,7 +96,7 @@ public class AccountController {
 		service.save(account);
 	}
 	
-	@RequestMapping(value = "account/saveInfo/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "account/save-info/{id}", method = RequestMethod.POST)
 	public void saveInfo(@PathVariable long id, @RequestBody SavePersonalInfoDto dto) {
 		Optional<Account> optionalAccount = service.findById(id);
 		if (optionalAccount.isEmpty()) {
