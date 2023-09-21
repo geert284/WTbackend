@@ -11,4 +11,8 @@ public interface ILoanRepository extends JpaRepository<Loan, Long>{
 	List<Loan> findByReturnDateIsNull();
 	
 	List<Loan> findByReturnDateIsNotNull();
+	
+	List<Loan> findByAccountIdAndReturnDateIsNull(long accountId);
+	
+	List<Loan> findByAccountIdAndReturnDateIsNotNull(long accountId);
 }
