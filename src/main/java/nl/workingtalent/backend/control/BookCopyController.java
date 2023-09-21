@@ -20,6 +20,7 @@ import nl.workingtalent.backend.dto.BookUpdateDto;
 import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.entity.BookCopy;
 import nl.workingtalent.backend.service.BookCopyService;
+import nl.workingtalent.backend.service.BookService;
 
 @CrossOrigin
 @RestController
@@ -27,6 +28,9 @@ public class BookCopyController {
 
 	@Autowired
 	private BookCopyService service;
+
+	@Autowired
+	private BookService bookService;
 
 	@RequestMapping("bookcopy/all")
 	public List<BookCopyDto> getBookCopys() {
@@ -58,11 +62,14 @@ public class BookCopyController {
 		// SavebookDTo controller toevoegen
 		BookCopy bookcopy = new BookCopy();
 
-		bookcopyDto.setStatus(bookcopy.getStatus());
-		bookcopyDto.setAvailable(bookcopy.isAvailable());
-		bookcopyDto.setBookId(bookcopy.getBook().getId());
-		bookcopyDto.setId(bookcopy.getId());
-		bookcopyDto.setOutOfUse(bookcopy.isOutOfUse());
+		bookcopy.setStatus(bookcopyDto.getStatus());
+		bookcopy.setAvailable(bookcopyDto.isAvailable());
+		bookcopy.setOutOfUse(bookcopyDto.isOutOfUse());
+		Optional<Book> opBook = bookService.findById(bookcopyDto.getBookId());
+		if (opBook.isEmpty()) {
+			return;
+		}
+		bookcopy.setBook(opBook.get());
 
 		service.create(bookcopy);
 	}
