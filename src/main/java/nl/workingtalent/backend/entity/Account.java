@@ -35,6 +35,9 @@ public class Account {
 
 	@Column(nullable = false)
 	private boolean admin;
+	
+	@Column(nullable = false)
+	private boolean active;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "account")
@@ -126,6 +129,14 @@ public class Account {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 	
 	

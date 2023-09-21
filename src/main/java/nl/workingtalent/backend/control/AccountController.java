@@ -20,6 +20,7 @@ import nl.workingtalent.backend.dto.AccountDto;
 import nl.workingtalent.backend.dto.AccountFinishedLoansDto;
 import nl.workingtalent.backend.dto.AccountLoansDto;
 import nl.workingtalent.backend.dto.AccountReservationsDto;
+import nl.workingtalent.backend.dto.ArchiveUserDto;
 import nl.workingtalent.backend.dto.LoginRequestDto;
 import nl.workingtalent.backend.dto.LoginResponseDto;
 import nl.workingtalent.backend.dto.SaveAccountDto;
@@ -64,6 +65,7 @@ public class AccountController {
 			accountDto.setLastName(account.getLastName());
 			accountDto.setAdmin(account.isAdmin());
 			accountDto.setPassword(account.getPassword());
+			accountDto.setActive(account.isActive());
 
 			dtos.add(accountDto);
 		});
@@ -77,11 +79,24 @@ public class AccountController {
 		account.setEmail(saveAccountDto.getEmail());
 		account.setAdmin(saveAccountDto.isAdmin());
 		account.setPassword(encryptPassword("WTRegister_123"));
+		account.setActive(true);
 		service.create(account);
 
 	}
 
-//	// Use POST instead ?
+	
+	@RequestMapping(value="account/archive-user/{id}", method=RequestMethod.POST)
+	public void saveInfo(@PathVariable long id, @RequestBody ArchiveUserDto dto) {
+		Optional<Account> optionalAccount = service.findById(id);
+		if (optionalAccount.isEmpty()) {
+			return;
+		}
+		Account account = optionalAccount.get();
+		
+		account.setActive(dto.isActive());
+		service.save(account);
+	}
+	
 	@RequestMapping(value = "account/saveInfo/{id}", method = RequestMethod.POST)
 	public void saveInfo(@PathVariable long id, @RequestBody SavePersonalInfoDto dto) {
 		Optional<Account> optionalAccount = service.findById(id);

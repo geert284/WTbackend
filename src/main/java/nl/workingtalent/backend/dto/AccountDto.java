@@ -13,6 +13,8 @@ public class AccountDto {
 	private String lastName;
 
 	private boolean admin;
+	
+	private boolean active;
 
 	public long getId() {
 		return id;
@@ -61,6 +63,15 @@ public class AccountDto {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
 	
 	
 
