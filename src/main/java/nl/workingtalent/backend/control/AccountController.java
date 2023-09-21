@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;
 import nl.workingtalent.backend.dto.AccountDto;
+import nl.workingtalent.backend.dto.AccountFinishedLoansDto;
+import nl.workingtalent.backend.dto.AccountLoansDto;
 import nl.workingtalent.backend.dto.AccountReservationsDto;
 import nl.workingtalent.backend.dto.ArchiveUserDto;
 import nl.workingtalent.backend.dto.LoginRequestDto;
@@ -26,9 +28,11 @@ import nl.workingtalent.backend.dto.UnprocessedReservationsDto;
 import nl.workingtalent.backend.dto.SavePersonalInfoDto;
 import nl.workingtalent.backend.entity.Account;
 import nl.workingtalent.backend.entity.AwaitingReservation;
+import nl.workingtalent.backend.entity.Loan;
 import nl.workingtalent.backend.entity.Reservation;
 import nl.workingtalent.backend.service.AccountService;
 import nl.workingtalent.backend.service.AwaitingReservationService;
+import nl.workingtalent.backend.service.LoanService;
 import nl.workingtalent.backend.service.ReservationService;
 
 @CrossOrigin
@@ -43,6 +47,9 @@ public class AccountController {
 
 	@Autowired
 	private AwaitingReservationService awaitingReservationService;
+	
+	@Autowired
+	private LoanService loanService;
 
 	@RequestMapping("account/all")
 	public List<AccountDto> getAccounts() {
@@ -88,27 +95,23 @@ public class AccountController {
 		
 		account.setActive(dto.isActive());
 		service.save(account);
-		
 	}
 	
-	@RequestMapping(value="account/archive/{id}", method=RequestMethod.POST)
+	@RequestMapping(value = "account/saveInfo/{id}", method = RequestMethod.POST)
 	public void saveInfo(@PathVariable long id, @RequestBody SavePersonalInfoDto dto) {
 		Optional<Account> optionalAccount = service.findById(id);
 		if (optionalAccount.isEmpty()) {
 			return;
 		}
 		Account account = optionalAccount.get();
-		
+
 		account.setFirstName(dto.getFirstName());
 		account.setLastName(dto.getLastName());
 		account.setPassword(encryptPassword(dto.getPassword()));
 		service.save(account);
-		
+
 	}
-	
-	
-	
-	
+
 	@PostMapping("account/login")
 	public LoginResponseDto login(@RequestBody LoginRequestDto dto) {
 		Optional<Account> optionalAccount = service.findByEmail(dto.getEmail());
@@ -161,13 +164,10 @@ public class AccountController {
 		return generatedString;
 	}
 
-	
 	public String encryptPassword(String myPassword) {
 		String pwHash = BCrypt.withDefaults().hashToString(12, myPassword.toCharArray());
 		return pwHash;
 	}
-
-
 
 	@RequestMapping("account/getReservations/{token}")
 	public List<AccountReservationsDto> getAllReservations(@PathVariable String token) {
@@ -207,6 +207,53 @@ public class AccountController {
 			dtos.add(dto);
 		});
 
+		return dtos;
+	}
+
+	@RequestMapping("account/getLoansActive/{token}")
+	public List<AccountLoansDto> getAllActiveLoans(@PathVariable String token) {
+		List<AccountLoansDto> dtos = new ArrayList<>();
+		
+		// find account using token
+		Optional<Account> opAccount = service.findByToken(token);
+		if (opAccount.isEmpty()) {
+			return null;
+		}
+		Account account = opAccount.get();
+
+		List<Loan> loans = loanService.findAllActiveForAccount(account.getId());
+		loans.forEach(loan -> {
+			AccountLoansDto dto = new AccountLoansDto();
+			dto.setLoanDate(loan.getLoanDate());
+			dto.setTagNumber(loan.getBookCopy().getTagNumber());
+			dto.setTitle(loan.getBookCopy().getBook().getTitle());
+			dtos.add(dto);
+		});
+		
+		return dtos;
+	}
+	
+	@RequestMapping("account/getLoansFinished/{token}")
+	public List<AccountFinishedLoansDto> getAllFinishedLoans(@PathVariable String token) {
+		List<AccountFinishedLoansDto> dtos = new ArrayList<>();
+		
+		// find account using token
+		Optional<Account> opAccount = service.findByToken(token);
+		if (opAccount.isEmpty()) {
+			return null;
+		}
+		Account account = opAccount.get();
+
+		List<Loan> loans = loanService.findAllInActiveForAccount(account.getId());
+		loans.forEach(loan -> {
+			AccountFinishedLoansDto dto = new AccountFinishedLoansDto();
+			dto.setLoanDate(loan.getLoanDate());
+			dto.setTagNumber(loan.getBookCopy().getTagNumber());
+			dto.setTitle(loan.getBookCopy().getBook().getTitle());
+			dto.setReturnDate(loan.getReturnDate());
+			dtos.add(dto);
+		});
+		
 		return dtos;
 	}
 

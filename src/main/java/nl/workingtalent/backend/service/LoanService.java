@@ -40,4 +40,12 @@ public class LoanService {
 	public Optional<Loan> findById(long id){
 		return repository.findById(id);
 	}
+	
+	public List<Loan> findAllActiveForAccount(long id){
+		return repository.findByAccountIdAndReturnDateIsNull(id);
+	}
+	
+	public List<Loan> findAllInActiveForAccount(long id){
+		return repository.findByAccountIdAndReturnDateIsNotNull(id);
+	}
 }

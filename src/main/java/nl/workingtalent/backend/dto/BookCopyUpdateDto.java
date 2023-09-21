@@ -1,20 +1,17 @@
 package nl.workingtalent.backend.dto;
 
-import nl.workingtalent.backend.entity.Book;
-
-public class BookCopyDto {
-	
+public class BookCopyUpdateDto {
 
 	private long id;
-	
+
 	private boolean available;
 
 	private String status;
 
 	private long bookId;
-	
+
 	private boolean outOfUse;
-	
+
 	public boolean isOutOfUse() {
 		return outOfUse;
 	}
@@ -54,6 +51,4 @@ public class BookCopyDto {
 	public void setBookId(long bookId) {
 		this.bookId = bookId;
 	}
-	
-
 }

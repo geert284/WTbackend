@@ -78,19 +78,17 @@ public class BookController {
 	@PostMapping("book/delete/{id}")
 	public void deleteBook(@PathVariable long id) {
 
-
 		service.deleteBook(id);
 	}
-	
 
 	@RequestMapping(method = RequestMethod.POST, value = "book/update/{id}")
 	public void updateBook(@PathVariable long id, @RequestBody BookUpdateDto bookUpdateDto) {
-		Optional<Book>optional = service.findById(id);
+		Optional<Book> optional = service.findById(id);
 		if (optional.isEmpty()) {
 			return;
 		}
 		Book dbBook = optional.get();
-		
+
 		dbBook.setAuthor(bookUpdateDto.getAuthor());
 		dbBook.setCategory(bookUpdateDto.getCategory());
 		dbBook.setCategory(bookUpdateDto.getCategory());
@@ -100,10 +98,9 @@ public class BookController {
 		dbBook.setISBN(bookUpdateDto.getISBN());
 		dbBook.setLanguage(bookUpdateDto.getLanguage());
 		dbBook.setOutOfUse(false);
-		
+
 		service.update(dbBook);
-		
-		
+
 	}
 
 }
