@@ -1,5 +1,6 @@
 package nl.workingtalent.backend.dto;
 
+import jakarta.persistence.Column;
 import nl.workingtalent.backend.entity.Book;
 
 public class BookCopyDto {
@@ -15,6 +16,17 @@ public class BookCopyDto {
 	
 	private boolean outOfUse;
 	
+	@Column(length = 50)
+	private int tagNumber;
+	
+	public int getTagNumber() {
+		return tagNumber;
+	}
+
+	public void setTagNumber(int tagNumber) {
+		this.tagNumber = tagNumber;
+	}
+
 	public boolean isOutOfUse() {
 		return outOfUse;
 	}
