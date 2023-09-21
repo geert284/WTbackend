@@ -24,12 +24,22 @@ public class BookCopyService {
 		return repository.findFirstByBookAndAvailableIsTrue(book);
 	}
 	
-	public void update(BookCopy bookCopy) {
-		repository.save(bookCopy);
+	public void update(BookCopy dbBookCopy) {
+		repository.save(dbBookCopy);
   }
   
 	public Optional<BookCopy> findById(long id){
 		return repository.findById(id);
+	}
+
+	public void create(BookCopy bookcopy) {
+		repository.save(bookcopy);
+		
+	}
+
+	public void deleteBookCopy(long id) {
+		repository.deleteById(id);
+		
 	}
 	
 }

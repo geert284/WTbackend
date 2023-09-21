@@ -1,30 +1,16 @@
 package nl.workingtalent.backend.dto;
 
-import jakarta.persistence.Column;
-
-public class BookCopyDto {
-	
+public class BookCopyUpdateDto {
 
 	private long id;
-	
+
 	private boolean available;
 
 	private String status;
 
 	private long bookId;
-	
-	private boolean outOfUse;
-	
-	@Column(length = 50)
-	private int tagNumber;
-	
-	public int getTagNumber() {
-		return tagNumber;
-	}
 
-	public void setTagNumber(int tagNumber) {
-		this.tagNumber = tagNumber;
-	}
+	private boolean outOfUse;
 
 	public boolean isOutOfUse() {
 		return outOfUse;
@@ -65,6 +51,4 @@ public class BookCopyDto {
 	public void setBookId(long bookId) {
 		this.bookId = bookId;
 	}
-	
-
 }
