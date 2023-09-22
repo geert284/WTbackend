@@ -42,4 +42,8 @@ public class BookCopyService {
 		
 	}
 	
+	public Optional<BookCopy> findHighestBookCopyByTagNumberDesc(long bookId){
+		return repository.findFirstByBookIdOrderByTagNumberDesc(bookId);
+	}
+	
 }

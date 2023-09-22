@@ -44,6 +44,7 @@ public class BookCopyController {
 			bookcopyDto.setBookId(bookcopy.getBook().getId());
 			bookcopyDto.setId(bookcopy.getId());
 			bookcopyDto.setOutOfUse(bookcopy.isOutOfUse());
+			bookcopyDto.setTagNumber(bookcopy.getTagNumber());
 
 			dtos.add(bookcopyDto);
 		});
@@ -61,7 +62,16 @@ public class BookCopyController {
 	public void createBook(@RequestBody BookCopyDto bookcopyDto) {
 		// SavebookDTo controller toevoegen
 		BookCopy bookcopy = new BookCopy();
-
+		
+		Optional<BookCopy> OpHighestBookCopy = service.findHighestBookCopyByTagNumberDesc(bookcopyDto.getBookId());
+		if (OpHighestBookCopy.isEmpty()) {
+			bookcopy.setTagNumber(1);
+		}
+		else {
+			bookcopy.setTagNumber(OpHighestBookCopy.get().getTagNumber() + 1);
+		}
+		
+		
 		bookcopy.setStatus(bookcopyDto.getStatus());
 		bookcopy.setAvailable(bookcopyDto.isAvailable());
 		bookcopy.setOutOfUse(bookcopyDto.isOutOfUse());
