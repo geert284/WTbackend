@@ -1,7 +1,6 @@
 package nl.workingtalent.backend.dto;
 
 import jakarta.persistence.Column;
-import nl.workingtalent.backend.entity.Book;
 
 public class BookCopyDto {
 	

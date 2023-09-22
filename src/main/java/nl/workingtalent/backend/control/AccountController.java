@@ -24,7 +24,6 @@ import nl.workingtalent.backend.dto.ArchiveUserDto;
 import nl.workingtalent.backend.dto.LoginRequestDto;
 import nl.workingtalent.backend.dto.LoginResponseDto;
 import nl.workingtalent.backend.dto.SaveAccountDto;
-import nl.workingtalent.backend.dto.UnprocessedReservationsDto;
 import nl.workingtalent.backend.dto.SavePersonalInfoDto;
 import nl.workingtalent.backend.entity.Account;
 import nl.workingtalent.backend.entity.AwaitingReservation;
@@ -86,7 +85,7 @@ public class AccountController {
 
 	
 	@RequestMapping(value="account/archive-user/{id}", method=RequestMethod.POST)
-	public void saveInfo(@PathVariable long id, @RequestBody ArchiveUserDto dto) {
+	public void archiveUser(@PathVariable long id, @RequestBody ArchiveUserDto dto) {
 		Optional<Account> optionalAccount = service.findById(id);
 		if (optionalAccount.isEmpty()) {
 			return;
@@ -97,7 +96,7 @@ public class AccountController {
 		service.save(account);
 	}
 	
-	@RequestMapping(value = "account/saveInfo/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "account/save-info/{id}", method = RequestMethod.POST)
 	public void saveInfo(@PathVariable long id, @RequestBody SavePersonalInfoDto dto) {
 		Optional<Account> optionalAccount = service.findById(id);
 		if (optionalAccount.isEmpty()) {
