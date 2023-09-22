@@ -13,4 +13,6 @@ public interface IBookCopyRepository extends JpaRepository<BookCopy, Long>{
 	
 	Optional<BookCopy> findFirstByBookIdOrderByTagNumberDesc(long bookId);
 	
+	long countByBookId(long bookId);
+	
 }
