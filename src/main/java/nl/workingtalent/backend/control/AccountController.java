@@ -1,5 +1,6 @@
 package nl.workingtalent.backend.control;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +8,7 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -109,6 +111,23 @@ public class AccountController {
 		account.setPassword(encryptPassword(dto.getPassword()));
 		service.save(account);
 
+	}
+	
+	// STILL WORKING ON THIS
+	@GetMapping("account/loans/{id}")
+	public boolean checkOpenLoans(@PathVariable long id) {
+		Optional<Account> opAccount = service.findById(id);
+		Account account = opAccount.get();
+
+		List<Loan> loans = loanService.findAllActiveForAccount(account.getId());
+		if (loans.isEmpty()) {
+			// This user does not have any loans
+			return false;
+		} else {
+			// This user still has loans
+			return true;
+		}
+		
 	}
 
 	@PostMapping("account/login")
