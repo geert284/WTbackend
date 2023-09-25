@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.servlet.http.HttpServletRequest;
 
 import nl.workingtalent.backend.dto.CancelReservationDto;
 import nl.workingtalent.backend.dto.CreateReservationDto;
@@ -69,7 +70,22 @@ public class ReservationController {
 	}
 
 	@PostMapping("reservation/create")
-	public void createReservation(@RequestBody CreateReservationDto dto) {
+	public void createReservation(HttpServletRequest request, @RequestBody CreateReservationDto dto) {
+
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
 
 		Optional<Book> opBook = bookService.findById(dto.getBookId());
 		if (opBook.isEmpty()) {
@@ -78,18 +94,13 @@ public class ReservationController {
 
 		// find available bookCopy with correct id
 		Optional<BookCopy> opBookCopy = bookCopyService.findFirstAvailableBookCopy(opBook.get());
-		// get account
-		Optional<Account> opAccount = accountService.findById(dto.getAccountId());
-		if (opAccount.isEmpty()) {
-			return;
-		}
 
 		// If there is no available copy, make an awaiting reservation, if there is,
 		// reserve that book
 		if (opBookCopy.isEmpty()) {
 			AwaitingReservation awaitingReservation = new AwaitingReservation();
 
-			awaitingReservation.setAccount(opAccount.get());
+			awaitingReservation.setAccount(account);
 			awaitingReservation.setBook(opBook.get());
 			awaitingReservation.setProcessed(false);
 			awaitingReservation.setRequestDate(LocalDateTime.now());
@@ -99,7 +110,7 @@ public class ReservationController {
 			Reservation reservation = new Reservation();
 			BookCopy bookCopy = opBookCopy.get();
 
-			reservation.setAccount(opAccount.get());
+			reservation.setAccount(account);
 			reservation.setBookCopy(bookCopy);
 			reservation.setProcessed(false);
 			reservation.setReservationDate(LocalDateTime.now());
@@ -113,7 +124,28 @@ public class ReservationController {
 	}
 
 	@RequestMapping("reservation/unprocessed")
-	public List<UnprocessedReservationsDto> getUnproccesedReservations() {
+	public List<UnprocessedReservationsDto> getUnproccesedReservations(HttpServletRequest request) {
+
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return null;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return null;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+		if (!account.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return null;
+		}
+		// end authentication part with admin check
+
 		List<UnprocessedReservationsDto> dtos = new ArrayList<>();
 		// find all reservations and awaitingRes which are unprocessed
 		List<Reservation> reservations = service.findAllUnprocessed();
@@ -147,7 +179,27 @@ public class ReservationController {
 	}
 
 	@RequestMapping("reservation/processed")
-	public List<ReservationHistoryDto> getProcessedReservations() {
+	public List<ReservationHistoryDto> getProcessedReservations(HttpServletRequest request) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return null;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return null;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+		if (!account.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return null;
+		}
+		// end authentication part with admin check
+
 		List<ReservationHistoryDto> dtos = new ArrayList<>();
 
 		List<Reservation> reservations = service.findAllProcessed();
@@ -180,13 +232,33 @@ public class ReservationController {
 	}
 
 	@RequestMapping("reservation/cancel")
-	public void cancelReservation(@RequestBody CancelReservationDto reservationDto) {
+	public void cancelReservation(HttpServletRequest request, @RequestBody CancelReservationDto reservationDto) {
+
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+
 		// get res form db
 		Optional<Reservation> opReservation = service.findById(reservationDto.getReservationId());
 		if (opReservation.isEmpty()) {
 			return;
 		}
 		Reservation reservation = opReservation.get();
+
+		if (account != reservation.getAccount()) {
+			return;
+		}
 
 		// get bookCopy from db
 		BookCopy bookCopy = reservation.getBookCopy();
