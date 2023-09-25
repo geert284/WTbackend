@@ -182,25 +182,40 @@ public class AccountController {
 		// find all reservations using account
 		List<Reservation> reservations = reservationService.findAllForAccount(account.getId());
 
-		// find all awaiting reservations using account
-		List<AwaitingReservation> awaitingReservations = awaitingReservationService.findAllForAccount(account.getId());
-
 		reservations.forEach(reservation -> {
 			AccountReservationsDto dto = new AccountReservationsDto();
 			dto.setReservationDate(reservation.getReservationDate());
-			dto.setTagNumber(reservation.getBookCopy().getTagNumber());
+			dto.setTagNumber(reservation.getBookCopy().getBook().getId() + "." + reservation.getBookCopy().getTagNumber());
 			dto.setTitle(reservation.getBookCopy().getBook().getTitle());
 			dto.setAvailable(true);
 			dto.setId(reservation.getId());
 
 			dtos.add(dto);
 		});
+		return dtos;
+	}
+	
+	@RequestMapping("account/getAwaitingReservations/{token}")
+	public List<AccountReservationsDto> getAllAwaitingReservations(@PathVariable String token){
+		
+		List<AccountReservationsDto> dtos = new ArrayList<>();
+
+		// find account using token
+		Optional<Account> opAccount = service.findByToken(token);
+		if (opAccount.isEmpty()) {
+			return null;
+		}
+		Account account = opAccount.get();
+
+		// find all awaiting reservations using account
+		List<AwaitingReservation> awaitingReservations = awaitingReservationService.findAllForAccount(account.getId());
 
 		awaitingReservations.forEach(reservation -> {
 			AccountReservationsDto dto = new AccountReservationsDto();
 			dto.setReservationDate(reservation.getRequestDate());
 			dto.setTitle(reservation.getBook().getTitle());
 			dto.setAvailable(false);
+			dto.setTagNumber("");
 			dto.setId(reservation.getId());
 
 			dtos.add(dto);
@@ -224,7 +239,7 @@ public class AccountController {
 		loans.forEach(loan -> {
 			AccountLoansDto dto = new AccountLoansDto();
 			dto.setLoanDate(loan.getLoanDate());
-			dto.setTagNumber(loan.getBookCopy().getTagNumber());
+			dto.setTagNumber(loan.getBookCopy().getBook().getId() + "." + loan.getBookCopy().getTagNumber());
 			dto.setTitle(loan.getBookCopy().getBook().getTitle());
 			dtos.add(dto);
 		});
@@ -247,7 +262,7 @@ public class AccountController {
 		loans.forEach(loan -> {
 			AccountFinishedLoansDto dto = new AccountFinishedLoansDto();
 			dto.setLoanDate(loan.getLoanDate());
-			dto.setTagNumber(loan.getBookCopy().getTagNumber());
+			dto.setTagNumber(loan.getBookCopy().getBook().getId() + "." +loan.getBookCopy().getTagNumber());
 			dto.setTitle(loan.getBookCopy().getBook().getTitle());
 			dto.setReturnDate(loan.getReturnDate());
 			dtos.add(dto);

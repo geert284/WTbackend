@@ -8,7 +8,7 @@ public class AccountReservationsDto {
 
 	private String title;
 	
-	private int tagNumber;
+	private String tagNumber;
 	
 	private boolean available;
 	
@@ -30,11 +30,11 @@ public class AccountReservationsDto {
 		this.title = title;
 	}
 
-	public int getTagNumber() {
+	public String getTagNumber() {
 		return tagNumber;
 	}
 
-	public void setTagNumber(int tagNumber) {
+	public void setTagNumber(String tagNumber) {
 		this.tagNumber = tagNumber;
 	}
 
