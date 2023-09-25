@@ -123,7 +123,7 @@ public class ReservationController {
 		}
 	}
 
-	@RequestMapping("reservation/unprocessed")
+	@RequestMapping("reservation/unprocessed/available")
 	public List<UnprocessedReservationsDto> getUnproccesedReservations(HttpServletRequest request) {
 
 		// authentication part
@@ -149,20 +149,48 @@ public class ReservationController {
 		List<UnprocessedReservationsDto> dtos = new ArrayList<>();
 		// find all reservations and awaitingRes which are unprocessed
 		List<Reservation> reservations = service.findAllUnprocessed();
-		List<AwaitingReservation> awaitingReservations = awaitingReservationService.findAllUnprocessed();
 
 		reservations.forEach(reservation -> {
 			UnprocessedReservationsDto dto = new UnprocessedReservationsDto();
 			String name = reservation.getAccount().getFirstName() + " " + reservation.getAccount().getLastName();
 			dto.setAccountName(name);
 			dto.setReservationDate(reservation.getReservationDate());
-			dto.setTagNumber(reservation.getBookCopy().getTagNumber());
+			dto.setTagNumber(reservation.getBookCopy().getBook().getId() + "." + reservation.getBookCopy().getTagNumber());
 			dto.setTitle(reservation.getBookCopy().getBook().getTitle());
 			dto.setAvailable(true);
 			dto.setId(reservation.getId());
 
 			dtos.add(dto);
 		});
+		return dtos;
+	}
+	
+	@RequestMapping("reservation/unprocessed/awaiting")
+	public List<UnprocessedReservationsDto> getUnproccesedAwaitingReservations(HttpServletRequest request) {
+
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return null;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return null;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+		if (!account.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return null;
+		}
+		// end authentication part with admin check
+
+		List<UnprocessedReservationsDto> dtos = new ArrayList<>();
+		// find all reservations and awaitingRes which are unprocessed
+		List<AwaitingReservation> awaitingReservations = awaitingReservationService.findAllUnprocessed();
 
 		awaitingReservations.forEach(reservation -> {
 			UnprocessedReservationsDto dto = new UnprocessedReservationsDto();
@@ -210,7 +238,7 @@ public class ReservationController {
 			String name = reservation.getAccount().getFirstName() + " " + reservation.getAccount().getLastName();
 			dto.setAccountName(name);
 			dto.setReservationDate(reservation.getReservationDate());
-			dto.setTagNumber(reservation.getBookCopy().getTagNumber());
+			dto.setTagNumber(reservation.getBookCopy().getBook().getId() + "." + reservation.getBookCopy().getTagNumber());
 			dto.setTitle(reservation.getBookCopy().getBook().getTitle());
 			dto.setType("Reservering van beschikbaar boek");
 

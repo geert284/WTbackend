@@ -95,7 +95,7 @@ public class LoanController {
 		loans.forEach(loan -> {
 			OpenLoansDto dto = new OpenLoansDto();
 			dto.setLoanDate(loan.getLoanDate());
-			dto.setTagNumber(loan.getBookCopy().getTagNumber());
+			dto.setTagNumber(loan.getBookCopy().getBook().getId() + "." + loan.getBookCopy().getTagNumber());
 			dto.setTitle(loan.getBookCopy().getBook().getTitle());
 			dto.setLoanId(loan.getId());
 			String name = loan.getAccount().getFirstName() + " " + loan.getAccount().getLastName();
@@ -135,7 +135,7 @@ public class LoanController {
 		loans.forEach(loan -> {
 			FinishedLoansDto dto = new FinishedLoansDto();
 			dto.setLoanDate(loan.getLoanDate());
-			dto.setTagNumber(loan.getBookCopy().getTagNumber());
+			dto.setTagNumber(loan.getBookCopy().getBook().getId() + "." + loan.getBookCopy().getTagNumber());
 			dto.setTitle(loan.getBookCopy().getBook().getTitle());
 			String name = loan.getAccount().getFirstName() + " " + loan.getAccount().getLastName();
 			dto.setName(name);

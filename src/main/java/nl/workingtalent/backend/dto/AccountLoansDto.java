@@ -8,7 +8,7 @@ public class AccountLoansDto {
 
 	private String title;
 
-	private int tagNumber;
+	private String tagNumber;
 
 	public LocalDateTime getLoanDate() {
 		return loanDate;
@@ -26,11 +26,11 @@ public class AccountLoansDto {
 		this.title = title;
 	}
 
-	public int getTagNumber() {
+	public String getTagNumber() {
 		return tagNumber;
 	}
 
-	public void setTagNumber(int tagNumber) {
+	public void setTagNumber(String tagNumber) {
 		this.tagNumber = tagNumber;
 	}
 
