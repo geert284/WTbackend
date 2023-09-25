@@ -15,4 +15,6 @@ public interface IBookCopyRepository extends JpaRepository<BookCopy, Long>{
 	
 	long countByBookId(long bookId);
 	
+	long countByBookIdAndAvailableIsTrue(long bookId);
+	
 }

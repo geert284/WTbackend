@@ -50,4 +50,8 @@ public class BookCopyService {
 		return repository.countByBookId(bookId);
 	}
 	
+	public long countByBookIdAvailable(long bookId) {
+		return repository.countByBookIdAndAvailableIsTrue(bookId);
+	}
+	
 }
