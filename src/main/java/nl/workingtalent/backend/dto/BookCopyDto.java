@@ -15,6 +15,7 @@ public class BookCopyDto {
 	
 	private boolean outOfUse;
 	
+	
 	@Column(length = 50)
 	private int tagNumber;
 	

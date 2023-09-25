@@ -46,4 +46,8 @@ public class BookCopyService {
 		return repository.findFirstByBookIdOrderByTagNumberDesc(bookId);
 	}
 	
+	public long countByBookId(long bookId) {
+		return repository.countByBookId(bookId);
+	}
+	
 }

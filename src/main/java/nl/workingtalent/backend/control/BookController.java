@@ -19,6 +19,7 @@ import nl.workingtalent.backend.dto.BookUpdateDto;
 import nl.workingtalent.backend.dto.DeleteBookDto;
 import nl.workingtalent.backend.dto.SaveBookDto;
 import nl.workingtalent.backend.entity.Book;
+import nl.workingtalent.backend.service.BookCopyService;
 import nl.workingtalent.backend.service.BookService;
 
 @CrossOrigin
@@ -27,15 +28,20 @@ public class BookController {
 
 	@Autowired
 	private BookService service;
+	
+	@Autowired
+	private BookCopyService bookCopyService;
 
 	@RequestMapping("book/all")
 	public List<BookDto> getBooks() {
 		List<Book> books = service.findAllBooks();
 
 		List<BookDto> dtos = new ArrayList<>();
+		
 
 		books.forEach(book -> {
 			BookDto bookDto = new BookDto();
+			bookDto.setBookCopys(bookCopyService.countByBookId(book.getId()));
 			bookDto.setAuthor(book.getAuthor());
 			bookDto.setCategory(book.getCategory());
 			bookDto.setEdition(book.getEdition());

@@ -20,6 +20,16 @@ public class BookDto {
 
 	private boolean outOfUse;
 
+	private long bookCopys;
+	
+	public long getBookCopys() {
+		return bookCopys;
+	}
+
+	public void setBookCopys(long bookCopys) {
+		this.bookCopys = bookCopys;
+	}
+
 	public long getId() {
 		return id;
 	}
