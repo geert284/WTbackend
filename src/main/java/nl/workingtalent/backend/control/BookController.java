@@ -41,7 +41,31 @@ public class BookController {
 
 		books.forEach(book -> {
 			BookDto bookDto = new BookDto();
-			bookDto.setBookCopys(bookCopyService.countByBookId(book.getId()));
+			bookDto.setBookCopies(bookCopyService.countByBookId(book.getId()));
+			bookDto.setAuthor(book.getAuthor());
+			bookDto.setCategory(book.getCategory());
+			bookDto.setEdition(book.getEdition());
+			bookDto.setTitle(book.getTitle());
+			bookDto.setFormat(book.getFormat());
+			bookDto.setISBN(book.getISBN());
+			bookDto.setId(book.getId());
+			bookDto.setLanguage(book.getLanguage());
+
+			dtos.add(bookDto);
+		});
+
+		return dtos;
+	}
+	
+	@RequestMapping("book/library")
+	public List<BookDto> getBooks2() {
+		List<Book> books = service.findAllBooks();
+
+		List<BookDto> dtos = new ArrayList<>();
+
+		books.forEach(book -> {
+			BookDto bookDto = new BookDto();
+			bookDto.setBookCopies(bookCopyService.countByBookIdAvailable(book.getId()));
 			bookDto.setAuthor(book.getAuthor());
 			bookDto.setCategory(book.getCategory());
 			bookDto.setEdition(book.getEdition());

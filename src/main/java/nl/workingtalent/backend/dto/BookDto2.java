@@ -1,6 +1,6 @@
 package nl.workingtalent.backend.dto;
 
-public class BookDto {
+public class BookDto2 {
 
 	private long id;
 
