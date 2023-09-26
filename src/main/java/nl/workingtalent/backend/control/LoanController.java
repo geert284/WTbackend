@@ -235,7 +235,7 @@ public class LoanController {
 		awaitingReservationService.update(awaitingReservation);
 
 		Reservation reservation = new Reservation();
-		reservation.setAccount(loan.getAccount());
+		reservation.setAccount(awaitingReservation.getAccount());
 		reservation.setBookCopy(bookCopy);
 		reservation.setProcessed(false);
 		reservation.setReservationDate(LocalDateTime.now());

@@ -310,7 +310,7 @@ public class ReservationController {
 		awaitingReservationService.update(awaitingReservation);
 
 		Reservation newReservation = new Reservation();
-		newReservation.setAccount(reservation.getAccount());
+		newReservation.setAccount(awaitingReservation.getAccount());
 		newReservation.setBookCopy(bookCopy);
 		newReservation.setProcessed(false);
 		newReservation.setReservationDate(LocalDateTime.now());
