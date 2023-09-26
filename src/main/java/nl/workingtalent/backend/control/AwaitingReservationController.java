@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nl.workingtalent.backend.dto.AwaitingReservationDto;
 import nl.workingtalent.backend.dto.CancelReservationDto;
+import nl.workingtalent.backend.entity.Account;
 import nl.workingtalent.backend.entity.AwaitingReservation;
+import nl.workingtalent.backend.service.AccountService;
 import nl.workingtalent.backend.service.AwaitingReservationService;
 
 @CrossOrigin
@@ -21,6 +24,8 @@ public class AwaitingReservationController {
 
 	@Autowired
 	private AwaitingReservationService service;
+	
+	private AccountService accountService;
 
 	@RequestMapping("awaitingreservation/all")
 	public List<AwaitingReservationDto> getAwaitingReservation() {
@@ -44,14 +49,34 @@ public class AwaitingReservationController {
 	}
 
 	@RequestMapping("awaitingReservation/cancel")
-	public void cancelReservation(@RequestBody CancelReservationDto reservationDto) {
+	public void cancelReservation(HttpServletRequest request, @RequestBody CancelReservationDto reservationDto) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+
 		Optional<AwaitingReservation> opAwaitingRes = service.findById(reservationDto.getReservationId());
-		System.out.println("test1");
+
 		if (opAwaitingRes.isEmpty()) {
 			return;
 		}
-		System.out.println("test2");
 		AwaitingReservation awaitingReservation = opAwaitingRes.get();
+		
+		if(account != awaitingReservation.getAccount()) {
+			System.out.println("Je kan alleen je eigen reserveringen cancelen");
+			return;
+		}
+		
 		awaitingReservation.setProcessed(true);
 		service.update(awaitingReservation);
 	}
