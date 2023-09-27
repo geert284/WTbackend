@@ -1,5 +1,6 @@
 package nl.workingtalent.backend.control;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,14 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import nl.workingtalent.backend.dto.BookCopyDto;
 import nl.workingtalent.backend.dto.BookCopyUpdateDto;
-import nl.workingtalent.backend.dto.BookDto;
-import nl.workingtalent.backend.dto.BookUpdateDto;
 import nl.workingtalent.backend.entity.Account;
+import nl.workingtalent.backend.service.AccountService;
+import nl.workingtalent.backend.entity.AwaitingReservation;
 import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.entity.BookCopy;
-import nl.workingtalent.backend.service.AccountService;
+import nl.workingtalent.backend.entity.Reservation;
+import nl.workingtalent.backend.service.AwaitingReservationService;
+
 import nl.workingtalent.backend.service.BookCopyService;
 import nl.workingtalent.backend.service.BookService;
+import nl.workingtalent.backend.service.ReservationService;
 
 @CrossOrigin
 @RestController
@@ -37,6 +41,12 @@ public class BookCopyController {
 	
 	@Autowired
 	private AccountService accountService;
+
+	private AwaitingReservationService awaitingReservationService;
+	
+	@Autowired
+	private ReservationService reservationService;
+
 
 	@RequestMapping("bookcopy/all")
 	public List<BookCopyDto> getBookCopys(HttpServletRequest request) {
@@ -107,25 +117,46 @@ public class BookCopyController {
 		// end authentication part with admin check
 				
 		// SavebookDTo controller toevoegen
-		BookCopy bookcopy = new BookCopy();
+		BookCopy bookCopy = new BookCopy();
 
 		Optional<BookCopy> OpHighestBookCopy = service.findHighestBookCopyByTagNumberDesc(bookcopyDto.getBookId());
 		if (OpHighestBookCopy.isEmpty()) {
-			bookcopy.setTagNumber(1);
+			bookCopy.setTagNumber(1);
 		} else {
-			bookcopy.setTagNumber(OpHighestBookCopy.get().getTagNumber() + 1);
+			bookCopy.setTagNumber(OpHighestBookCopy.get().getTagNumber() + 1);
 		}
 
-		bookcopy.setStatus(bookcopyDto.getStatus());
-		bookcopy.setAvailable(bookcopyDto.isAvailable());
-		bookcopy.setOutOfUse(bookcopyDto.isOutOfUse());
+		bookCopy.setStatus(bookcopyDto.getStatus());
+		bookCopy.setAvailable(bookcopyDto.isAvailable());
+		bookCopy.setOutOfUse(bookcopyDto.isOutOfUse());
 		Optional<Book> opBook = bookService.findById(bookcopyDto.getBookId());
 		if (opBook.isEmpty()) {
 			return;
 		}
-		bookcopy.setBook(opBook.get());
+		bookCopy.setBook(opBook.get());
 
-		service.create(bookcopy);
+		service.create(bookCopy);
+
+		// check if there is a awaiting reservation, if there is create reservation
+		Optional<AwaitingReservation> opAwaitingRes = awaitingReservationService
+				.findFirstByBook(bookCopy.getBook().getId());
+		if (opAwaitingRes.isEmpty()) {
+			return;
+		}
+		AwaitingReservation awaitingReservation = opAwaitingRes.get();
+		awaitingReservation.setProcessed(true);
+		awaitingReservationService.update(awaitingReservation);
+
+		Reservation newReservation = new Reservation();
+		newReservation.setAccount(awaitingReservation.getAccount());
+		newReservation.setBookCopy(bookCopy);
+		newReservation.setProcessed(false);
+		newReservation.setReservationDate(LocalDateTime.now());
+		reservationService.update(newReservation);
+
+		bookCopy.setAvailable(false);
+		service.update(bookCopy);
+
 	}
 
 	// It also needs to check if it has a child row

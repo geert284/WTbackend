@@ -155,7 +155,8 @@ public class ReservationController {
 			String name = reservation.getAccount().getFirstName() + " " + reservation.getAccount().getLastName();
 			dto.setAccountName(name);
 			dto.setReservationDate(reservation.getReservationDate());
-			dto.setTagNumber(reservation.getBookCopy().getBook().getId() + "." + reservation.getBookCopy().getTagNumber());
+			dto.setTagNumber(
+					reservation.getBookCopy().getBook().getId() + "." + reservation.getBookCopy().getTagNumber());
 			dto.setTitle(reservation.getBookCopy().getBook().getTitle());
 			dto.setAvailable(true);
 			dto.setId(reservation.getId());
@@ -164,7 +165,7 @@ public class ReservationController {
 		});
 		return dtos;
 	}
-	
+
 	@RequestMapping("reservation/unprocessed/awaiting")
 	public List<UnprocessedReservationsDto> getUnproccesedAwaitingReservations(HttpServletRequest request) {
 
@@ -199,6 +200,7 @@ public class ReservationController {
 			dto.setReservationDate(reservation.getRequestDate());
 			dto.setTitle(reservation.getBook().getTitle());
 			dto.setAvailable(false);
+			dto.setId(reservation.getId());
 
 			dtos.add(dto);
 		});
@@ -238,7 +240,8 @@ public class ReservationController {
 			String name = reservation.getAccount().getFirstName() + " " + reservation.getAccount().getLastName();
 			dto.setAccountName(name);
 			dto.setReservationDate(reservation.getReservationDate());
-			dto.setTagNumber(reservation.getBookCopy().getBook().getId() + "." + reservation.getBookCopy().getTagNumber());
+			dto.setTagNumber(
+					reservation.getBookCopy().getBook().getId() + "." + reservation.getBookCopy().getTagNumber());
 			dto.setTitle(reservation.getBookCopy().getBook().getTitle());
 			dto.setType("Reservering van beschikbaar boek");
 
@@ -310,7 +313,7 @@ public class ReservationController {
 		awaitingReservationService.update(awaitingReservation);
 
 		Reservation newReservation = new Reservation();
-		newReservation.setAccount(reservation.getAccount());
+		newReservation.setAccount(awaitingReservation.getAccount());
 		newReservation.setBookCopy(bookCopy);
 		newReservation.setProcessed(false);
 		newReservation.setReservationDate(LocalDateTime.now());
@@ -319,4 +322,69 @@ public class ReservationController {
 		bookCopy.setAvailable(false);
 		bookCopyService.update(bookCopy);
 	}
+
+	@RequestMapping("reservation/canceladmin")
+	public void cancelReservationAdmin(HttpServletRequest request, @RequestBody CancelReservationDto reservationDto) {
+
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+		if (!account.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return;
+		}
+		// end authentication part with admin check
+		
+		// get res form db
+		Optional<Reservation> opReservation = service.findById(reservationDto.getReservationId());
+		if (opReservation.isEmpty()) {
+			System.out.println("Geen res gevonden");
+			return;
+		}
+		Reservation reservation = opReservation.get();
+
+		// get bookCopy from db
+		BookCopy bookCopy = reservation.getBookCopy();
+
+		// set res to processed
+		reservation.setProcessed(true);
+		service.update(reservation);
+
+		// set bookCopy to available
+		bookCopy.setAvailable(true);
+		bookCopyService.update(bookCopy);
+
+		// check if there is a awaiting reservation, if there is create reservation
+		Optional<AwaitingReservation> opAwaitingRes = awaitingReservationService
+				.findFirstByBook(bookCopy.getBook().getId());
+		if (opAwaitingRes.isEmpty()) {
+			System.out.println("Geen awaiting res gevonden");
+			return;
+		}
+		AwaitingReservation awaitingReservation = opAwaitingRes.get();
+		awaitingReservation.setProcessed(true);
+		awaitingReservationService.update(awaitingReservation);
+
+		Reservation newReservation = new Reservation();
+		newReservation.setAccount(awaitingReservation.getAccount());
+		newReservation.setBookCopy(bookCopy);
+		newReservation.setProcessed(false);
+		newReservation.setReservationDate(LocalDateTime.now());
+		service.update(newReservation);
+
+		bookCopy.setAvailable(false);
+		bookCopyService.update(bookCopy);
+	}
+
 }
