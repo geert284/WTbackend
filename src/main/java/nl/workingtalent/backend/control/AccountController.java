@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import at.favre.lib.crypto.bcrypt.BCrypt.Result;
+import jakarta.servlet.http.HttpServletRequest;
 import nl.workingtalent.backend.dto.AccountDto;
 import nl.workingtalent.backend.dto.AccountFinishedLoansDto;
 import nl.workingtalent.backend.dto.AccountLoansDto;
@@ -53,9 +54,28 @@ public class AccountController {
 	private LoanService loanService;
 
 	@RequestMapping("account/all")
-	public List<AccountDto> getAccounts() {
+	public List<AccountDto> getAccounts(HttpServletRequest request) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header meegegeven");
+			return null;
+		}
+		Optional<Account> optional = service.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return null;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account thisAccount = optional.get();
+		// end authentication part
+		if (!thisAccount.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return null;
+		}
+		// end authentication part with admin check
+		
 		List<Account> accounts = service.findAllAccounts();
-
 		List<AccountDto> dtos = new ArrayList<>();
 
 		accounts.forEach(account -> {
@@ -75,27 +95,67 @@ public class AccountController {
 	}
 
 	@RequestMapping(value = "account/create", method = RequestMethod.POST)
-	public void createUser(@RequestBody SaveAccountDto saveAccountDto) {
-		Account account = new Account();
-		account.setEmail(saveAccountDto.getEmail());
-		account.setAdmin(saveAccountDto.isAdmin());
-		account.setPassword(encryptPassword("WTRegister_123"));
-		account.setActive(true);
-		service.create(account);
+	public void createUser(HttpServletRequest request, @RequestBody SaveAccountDto saveAccountDto) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header meegegeven");
+			return;
+		}
+		Optional<Account> optional = service.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+		if (!account.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return;
+		}
+		// end authentication part with admin check
+				
+		Account newAccount = new Account();
+		newAccount.setEmail(saveAccountDto.getEmail());
+		newAccount.setAdmin(saveAccountDto.isAdmin());
+		newAccount.setPassword(encryptPassword("WTRegister_123"));
+		newAccount.setActive(true);
+		service.create(newAccount);
 
 	}
 
 	
 	@RequestMapping(value="account/archive-user/{id}", method=RequestMethod.POST)
-	public void archiveUser(@PathVariable long id, @RequestBody ArchiveUserDto dto) {
+	public void archiveUser(HttpServletRequest request, @PathVariable long id, @RequestBody ArchiveUserDto dto) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return;
+		}
+		Optional<Account> optional = service.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+		if (!account.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return;
+		}
+		// end authentication part with admin check
+				
 		Optional<Account> optionalAccount = service.findById(id);
 		if (optionalAccount.isEmpty()) {
 			return;
 		}
-		Account account = optionalAccount.get();
+		Account archiveAccount = optionalAccount.get();
 		
-		account.setActive(dto.isActive());
-		service.save(account);
+		archiveAccount.setActive(dto.isActive());
+		service.save(archiveAccount);
 	}
 	
 	@RequestMapping(value = "account/save-info/{id}", method = RequestMethod.POST)
@@ -115,11 +175,31 @@ public class AccountController {
 	
 	// STILL WORKING ON THIS
 	@GetMapping("account/loans/{id}")
-	public boolean checkOpenLoans(@PathVariable long id) {
+	public boolean checkOpenLoans(HttpServletRequest request, @PathVariable long id) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return (Boolean) null;
+		}
+		Optional<Account> optional = service.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return (Boolean) null;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+		if (!account.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return (Boolean) null;
+		}
+		// end authentication part with admin check
+				
 		Optional<Account> opAccount = service.findById(id);
-		Account account = opAccount.get();
+		Account checkAccount = opAccount.get();
 
-		List<Loan> loans = loanService.findAllActiveForAccount(account.getId());
+		List<Loan> loans = loanService.findAllActiveForAccount(checkAccount.getId());
 		if (loans.isEmpty()) {
 			// This user does not have any loans
 			return false;
