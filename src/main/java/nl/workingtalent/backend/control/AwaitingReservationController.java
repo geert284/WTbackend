@@ -25,6 +25,7 @@ public class AwaitingReservationController {
 	@Autowired
 	private AwaitingReservationService service;
 	
+	@Autowired
 	private AccountService accountService;
 
 	@RequestMapping("awaitingreservation/all")
@@ -68,6 +69,7 @@ public class AwaitingReservationController {
 		Optional<AwaitingReservation> opAwaitingRes = service.findById(reservationDto.getReservationId());
 
 		if (opAwaitingRes.isEmpty()) {
+			System.out.println("Awaiting reservering niet gevonden");
 			return;
 		}
 		AwaitingReservation awaitingReservation = opAwaitingRes.get();
@@ -77,6 +79,40 @@ public class AwaitingReservationController {
 			return;
 		}
 		
+		awaitingReservation.setProcessed(true);
+		service.update(awaitingReservation);
+	}
+	
+	@RequestMapping("awaitingReservation/canceladmin")
+	public void cancelReservationAdmin(HttpServletRequest request, @RequestBody CancelReservationDto reservationDto) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header mee gegeven");
+			return;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account account = optional.get();
+		// end authentication part
+		if (!account.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return;
+		}
+		// end authentication part with admin check
+		
+		Optional<AwaitingReservation> opAwaitingRes = service.findById(reservationDto.getReservationId());
+
+		if (opAwaitingRes.isEmpty()) {
+			System.out.println("Awaiting reservering niet gevonden");
+			return;
+		}		
+		
+		AwaitingReservation awaitingReservation = opAwaitingRes.get();		
 		awaitingReservation.setProcessed(true);
 		service.update(awaitingReservation);
 	}
