@@ -14,15 +14,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import nl.workingtalent.backend.dto.BookCopyDto;
 import nl.workingtalent.backend.dto.BookCopyUpdateDto;
-import nl.workingtalent.backend.dto.BookDto;
-import nl.workingtalent.backend.dto.BookUpdateDto;
+import nl.workingtalent.backend.entity.Account;
+import nl.workingtalent.backend.service.AccountService;
 import nl.workingtalent.backend.entity.AwaitingReservation;
 import nl.workingtalent.backend.entity.Book;
 import nl.workingtalent.backend.entity.BookCopy;
 import nl.workingtalent.backend.entity.Reservation;
 import nl.workingtalent.backend.service.AwaitingReservationService;
+
 import nl.workingtalent.backend.service.BookCopyService;
 import nl.workingtalent.backend.service.BookService;
 import nl.workingtalent.backend.service.ReservationService;
@@ -38,13 +40,36 @@ public class BookCopyController {
 	private BookService bookService;
 	
 	@Autowired
+	private AccountService accountService;
+
 	private AwaitingReservationService awaitingReservationService;
 	
 	@Autowired
 	private ReservationService reservationService;
 
+
 	@RequestMapping("bookcopy/all")
-	public List<BookCopyDto> getBookCopys() {
+	public List<BookCopyDto> getBookCopys(HttpServletRequest request) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header meegegeven");
+			return null;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return null;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account thisAccount = optional.get();
+		// end authentication part
+		if (!thisAccount.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return null;
+		}
+		// end authentication part with admin check
+		
 		List<BookCopy> bookcopys = service.findAllBookCopys();
 		List<BookCopyDto> dtos = new ArrayList<>();
 
@@ -70,7 +95,27 @@ public class BookCopyController {
 
 	@RequestMapping(value = "bookcopy/create", method = RequestMethod.POST)
 	// @PostMapping("book/create")
-	public void createBook(@RequestBody BookCopyDto bookcopyDto) {
+	public void createBook(HttpServletRequest request, @RequestBody BookCopyDto bookcopyDto) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header meegegeven");
+			return;
+		}
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account thisAccount = optional.get();
+		// end authentication part
+		if (!thisAccount.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return;
+		}
+		// end authentication part with admin check
+				
 		// SavebookDTo controller toevoegen
 		BookCopy bookCopy = new BookCopy();
 
@@ -122,12 +167,32 @@ public class BookCopyController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "bookcopy/update/{id}")
-	public void updateBook(@PathVariable long id, @RequestBody BookCopyUpdateDto bookCopyUpdateDto) {
-		Optional<BookCopy> optional = service.findById(id);
-		if (optional.isEmpty()) {
+	public void updateBook(HttpServletRequest request, @PathVariable long id, @RequestBody BookCopyUpdateDto bookCopyUpdateDto) {
+		// authentication part
+		String authHeader = request.getHeader("Authorization");
+		if (authHeader == null || authHeader.isBlank()) {
+			System.out.println("Geen header meegegeven");
 			return;
 		}
-		BookCopy dbBookCopy = optional.get();
+		Optional<Account> optional = accountService.findByToken(authHeader);
+		if (optional.isEmpty()) {
+			System.out.println("Account niet gevonden");
+			return;
+		}
+		System.out.println("Account is gevonden met naam " + optional.get().getEmail());
+		Account thisAccount = optional.get();
+		// end authentication part
+		if (!thisAccount.isAdmin()) {
+			System.out.println("Account is geen admin");
+			return;
+		}
+		// end authentication part with admin check
+		
+		Optional<BookCopy> optionalCopy = service.findById(id);
+		if (optionalCopy.isEmpty()) {
+			return;
+		}
+		BookCopy dbBookCopy = optionalCopy.get();
 
 		dbBookCopy.setStatus(bookCopyUpdateDto.getStatus());
 		dbBookCopy.setAvailable(bookCopyUpdateDto.isAvailable());
